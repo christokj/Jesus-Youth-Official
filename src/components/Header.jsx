@@ -8,29 +8,29 @@ const Header = () => {
     const [menuOpen, setMenuOpen] = useState(false);
 
     return (
-        <header className="bg-black text-white shadow-md w-full sm:h-24 h-14 relative">
-            <div className="container mx-auto flex justify-between items-end h-full">
-
-                <div className="relative flex justify-center sm:justify-normal w-full">
-                    <div className="flex flex-row absolute -bottom-8 z-10 w-fit">
-                        <SVGComponent />
-                        <Link to="/" className="text-2xl font-bold sm:block hidden">
-                            <span className="text-blue-400">DEEP</span> NET <br />
-                            <span className="text-gray-400">SOFT</span>
+        <header className="shadow-md w-full sm:h-24 h-14 text-white bg-gradient-to-br from-green-300 via-blue-500 to-purple-600">
+            <div className="container mx-auto flex items-end ">
+                <div className="flex justify-center items-center  sm:justify-normal w-full">
+                    <div className="flex flex-row z-10 justify-center items-center  h-full">
+                        <div className=" w-24 h-24 py-2">
+                            <SVGComponent />
+                        </div>
+                        <Link to="/" className="sm:text-2xl sm:font-bold font-bold ">
+                            <h2 className="">Jesus Youth Chengaloor</h2>
                         </Link>
                     </div>
                 </div>
 
-
-                <nav className="hidden sm:flex gap-6 w-full p-4">
+                <nav className="hidden sm:flex gap-6 w-full p-4 justify-center ">
                     <Link to="/" className="hover:text-gray-300">HOME</Link>
-                    <Link to="/menu-page" className="hover:text-gray-300">MENU</Link>
-                    <Link className="hover:text-gray-300">MAKE A RESERVATION</Link>
+                    <Link to="/menu-page" className="hover:text-gray-300">ADMIN</Link>
                     <Link to="/contact" className="hover:text-gray-300">CONTACT US</Link>
                 </nav>
-                <button onClick={() => setMenuOpen(true)} className="sm:hidden text-white">
-                    <FaBars size={24} />
-                </button>
+                <div className="flex sm:hidden z-10">
+                    <button onClick={() => setMenuOpen(true)} className=" text-white">
+                        <FaBars size={24} />
+                    </button>
+                </div>
             </div>
 
             <Dialog open={menuOpen} onClose={() => setMenuOpen(false)} className="relative z-50">

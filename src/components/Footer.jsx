@@ -7,14 +7,14 @@ const Footer = () => {
 
         <div className="font-semibold border p-3 rounded-2xl flex justify-center flex-col items-center">
           <h3 className="text-lg ">CONNECT WITH US</h3>
-          <p className="text-gray-400">+91 9567843340</p>
+          <p className="text-gray-400">+91 6282130289</p>
           <p className="text-gray-400">
             Email us at <a href="mailto:info@deepnetsoft.com" className="text-blue-400 hover:underline">info@deepnetsoft.com</a>
           </p>
         </div>
 
         <div className="font-semibold border p-3 rounded-2xl flex justify-center flex-col items-center">
-          <h3 className="text-lg font-semibold">DEEP NET SOFT</h3>
+          <h3 className="text-lg font-semibold">JESUS YOUTH CHENGALOOR</h3>
           <p className="text-gray-400"></p>
         </div>
 

@@ -8,9 +8,8 @@ function App() {
 
   return (
     <>
-      {/* <RouterProvider router={router} />
-      <Toaster /> */}
-      hai
+      <RouterProvider router={router} />
+      <Toaster />
     </>
   );
 }
