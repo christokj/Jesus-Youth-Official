@@ -1,9 +1,8 @@
 import * as React from "react";
-// viewBox = "0 0 512 512" className = "w-4 h-4 sm:w-8 sm:h-8 overflow-visible"
 const SVGComponent = () => (
   <svg version="1.0" xmlns="http://www.w3.org/2000/svg"
     width="1285.000000pt" height="1285.000000pt" viewBox="0 0 1285.000000 1285.000000"
-    preserveAspectRatio="xMidYMid meet" className="w-8 h-8 sm:w-16 sm:h-16 overflow-visible">
+    preserveAspectRatio="xMidYMid meet" className="w-8 h-8 sm:w-14 sm:h-14 overflow-visible">
 
     <g transform="translate(0.000000,1285.000000) scale(0.100000,-0.100000)"
       fill="#000000" stroke="none">

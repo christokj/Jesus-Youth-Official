@@ -8,11 +8,11 @@ const Header = () => {
     const [menuOpen, setMenuOpen] = useState(false);
 
     return (
-        <header style={{ colorScheme: 'light' }} className="shadow-md w-full sm:h-24 h-14 text-white bg-gradient-to-br from-green-300 via-blue-400 to-purple-400">
+        <header style={{ colorScheme: 'light' }} className="shadow-md w-full sm:h-20 h-14 text-white bg-gradient-to-br from-white via-gray-600 to-white">
             <div className="container mx-auto flex items-end ">
                 <div className="flex justify-center items-center  sm:justify-normal w-full">
                     <div className="flex flex-row z-10 justify-center items-center  h-full">
-                        <div className=" w-24 h-24 py-3.5 sm:py-4">
+                        <div className=" w-24 h-24 py-3.5 sm:py-3">
                             <SVGComponent />
                         </div>
                         <Link to="/" className="sm:text-2xl sm:font-bold font-bold ">
@@ -21,10 +21,11 @@ const Header = () => {
                     </div>
                 </div>
 
-                <nav className="hidden sm:flex gap-6 w-full p-4 justify-center ">
-                    <Link to="/" className="hover:text-gray-300">HOME</Link>
-                    <Link to="/menu-page" className="hover:text-gray-300">ADMIN</Link>
-                    <Link to="/contact" className="hover:text-gray-300">CONTACT US</Link>
+                <nav className="hidden sm:flex gap-6 w-full p-6 justify-center ">
+                    <Link to="/" className="hover:text-gray-300 font-bold">HOME</Link>
+                    <Link to="/register-page" className="hover:text-gray-300 font-bold">REGISTER</Link>
+                    <Link to="/admin-home" className="hover:text-gray-300 font-bold">ADMIN</Link>
+                    <Link to="/contact" className="hover:text-gray-300 font-bold">CONTACT US</Link>
                 </nav>
                 <div className="flex sm:hidden z-10">
                     <button onClick={() => setMenuOpen(true)} className=" text-white">
