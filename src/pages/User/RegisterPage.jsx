@@ -75,9 +75,9 @@ const RegisterPage = () => {
             <div className="min-h-screen bg-gradient-to-br  from-blue-100 via-purple-200 to-pink-100 flex items-center justify-center p-4">
                 <form
                     onSubmit={handleSubmit}
-                    className={`w-full max-w-lg p-8 rounded-xl shadow-xl backdrop-blur-lg 
+                    className={`w-full max-w-[90%] sm:max-w-[500px] md:max-w-[600px] p-6 rounded-xl shadow-xl backdrop-blur-lg 
                         ${isDarkMode ? 'bg-gray-800 text-white' : 'bg-white bg-opacity-80 text-black'}
-                    `}
+                       `}
                 >
                     <h2 className="text-3xl font-bold text-center text-gray-700 mb-6">Registration Form</h2>
 
@@ -211,7 +211,12 @@ const RegisterPage = () => {
                         </select>
                     </div>
 
-                    <button type="submit" className="btn btn-primary w-full">
+                    <button
+                        type="submit"
+                        className="btn bg-gradient-to-br from-white via-black to-white text-white w-full 
+                                     py-3 rounded-lg font-semibold transition-all duration-300 
+                                     hover:scale-105 hover:brightness-110 hover:shadow-lg"
+                    >
                         Submit
                     </button>
                 </form>

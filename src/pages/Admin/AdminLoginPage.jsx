@@ -1,7 +1,25 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const AdminLoginPage = () => {
+
+    const [isDarkMode, setIsDarkMode] = useState(false);
+
+    useEffect(() => {
+        const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+        setIsDarkMode(mediaQuery.matches);
+
+        const handleChange = (event) => {
+            setIsDarkMode(event.matches);
+        };
+
+        mediaQuery.addEventListener('change', handleChange);
+
+        return () => {
+            mediaQuery.removeEventListener('change', handleChange);
+        };
+    }, []);
+
     const [formData, setFormData] = useState({
         username: '',
         password: '',
@@ -43,10 +61,10 @@ const AdminLoginPage = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-blue-100 via-purple-200 to-pink-100 flex items-center justify-center p-4">
+        <div className=" bg-gradient-to-br h-screen  from-blue-100 via-purple-200 to-pink-100 flex items-center justify-center p-4">
             <form
                 onSubmit={handleSubmit}
-                className="w-full max-w-md p-8 rounded-xl shadow-xl bg-white bg-opacity-80"
+                className={`w-full max-w-md p-8 mb-20 rounded-xl shadow-xl bg-white bg-opacity-80 ${isDarkMode ? 'bg-gray-800 text-white' : 'bg-white bg-opacity-80 text-black'}`}
             >
                 <h2 className="text-3xl font-bold text-center text-gray-700 mb-6">Admin Login</h2>
 
@@ -85,11 +103,15 @@ const AdminLoginPage = () => {
                     </button>
                 </div>
 
-                <button type="submit" className="btn btn-primary w-full">
+                <button type="submit"
+                    className="btn bg-gradient-to-br from-white via-black to-white text-white w-full 
+                                     py-3 rounded-lg font-semibold transition-all duration-300 
+                                     hover:scale-105 hover:brightness-110 hover:shadow-lg"
+                >
                     Login
                 </button>
             </form>
-        </div>
+        </div >
     );
 };
 

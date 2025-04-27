@@ -4,9 +4,10 @@ import { React, useEffect, useState } from "react";
 const HomePage = () => {
 
   const images = [
-    "https://res.cloudinary.com/dfm6raue1/image/upload/v1745751196/Rooted_In_Christ_zbr1ly.png",
-    "https://res.cloudinary.com/dfm6raue1/image/upload/v1745751196/Rooted_In_Christ_zbr1ly.png",
-    "https://res.cloudinary.com/dfm6raue1/image/upload/v1745751196/Rooted_In_Christ_zbr1ly.png",
+    "https://res.cloudinary.com/dfm6raue1/image/upload/v1745768457/Rooted_In_Christ_gualbf.png",
+    "https://res.cloudinary.com/dfm6raue1/image/upload/v1745768457/Rooted_In_Christ_gualbf.png",
+    "https://res.cloudinary.com/dfm6raue1/image/upload/v1745768457/Rooted_In_Christ_gualbf.png",
+
   ];
 
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -23,7 +24,7 @@ const HomePage = () => {
 
   return (
     <>
-      <div className="w-full h-full max-w-full mx-auto rounded-box overflow-hidden shadow-lg">
+      <div className="w-full h-full max-w-full mx-auto overflow-hidden shadow-lg">
         <div className="relative w-full h-96">
           {images.map((image, index) => (
             <img

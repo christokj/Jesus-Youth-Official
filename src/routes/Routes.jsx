@@ -7,6 +7,7 @@ import RegisterPage from "../pages/User/RegisterPage";
 import AdminHomepage from "../pages/Admin/AdminHomepage";
 import SuccessPage from "../pages/User/SuccessPage";
 import AdminLoginPage from "../pages/Admin/AdminLoginPage";
+import ContactPage from "../pages/User/ContactPage";
 
 {/* <Route path="/" element={<HomePage />} /> */ }
 // <Route path="/menu/:menuId" element={<MenuPage />} /> {/* Dynamic Route */}
@@ -40,6 +41,10 @@ export const router = createBrowserRouter([
             {
                 path: "admin-login",
                 element: <AdminLoginPage />
+            },
+            {
+                path: "contact-page",
+                element: <ContactPage />
             }
         ],
     }
