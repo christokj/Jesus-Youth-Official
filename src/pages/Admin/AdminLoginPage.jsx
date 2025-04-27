@@ -61,12 +61,23 @@ const AdminLoginPage = () => {
     };
 
     return (
-        <div className=" bg-gradient-to-br h-screen  from-blue-100 via-purple-200 to-pink-100 flex items-center justify-center p-4">
+        <div
+            className={`h-screen flex items-center justify-center p-4 ${isDarkMode
+                    ? 'bg-gray-900'
+                    : 'bg-gradient-to-br from-blue-100 via-purple-200 to-pink-100'
+                }`}
+        >
             <form
                 onSubmit={handleSubmit}
-                className={`w-full max-w-md p-8 mb-20 rounded-xl shadow-xl bg-white bg-opacity-80 ${isDarkMode ? 'bg-gray-800 text-white' : 'bg-white bg-opacity-80 text-black'}`}
+                className={`w-full max-w-md p-8 rounded-xl shadow-xl ${isDarkMode ? 'bg-gray-800 text-white' : 'bg-white bg-opacity-80 text-black'
+                    }`}
             >
-                <h2 className="text-3xl font-bold text-center text-gray-700 mb-6">Admin Login</h2>
+                <h2
+                    className={`text-3xl font-bold text-center mb-6 ${isDarkMode ? 'text-white' : 'text-gray-700'
+                        }`}
+                >
+                    Admin Login
+                </h2>
 
                 {errorMessage && <div className="text-red-500 text-center mb-4">{errorMessage}</div>}
 
@@ -84,7 +95,7 @@ const AdminLoginPage = () => {
                 <div className="form-control mb-4 relative">
                     <label className="label">Password</label>
                     <input
-                        type={showPassword ? 'text' : 'password'} // Toggle between text and password input type
+                        type={showPassword ? 'text' : 'password'}
                         name="password"
                         className="input input-bordered w-full"
                         onChange={handleChange}
@@ -96,22 +107,22 @@ const AdminLoginPage = () => {
                         className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"
                     >
                         {showPassword ? (
-                            <i className="fas fa-eye-slash"></i> // Eye Slash Icon when password is hidden
+                            <i className="fas fa-eye-slash"></i>
                         ) : (
-                            <i className="fas fa-eye"></i> // Eye Icon when password is visible
+                            <i className="fas fa-eye"></i>
                         )}
                     </button>
                 </div>
 
-                <button type="submit"
-                    className="btn bg-gradient-to-br from-white via-black to-white text-white w-full 
-                                     py-3 rounded-lg font-semibold transition-all duration-300 
-                                     hover:scale-105 hover:brightness-110 hover:shadow-lg"
+                <button
+                    type="submit"
+                    className="btn bg-gradient-to-br from-white via-black to-white text-white w-full py-3 rounded-lg font-semibold transition-all duration-300 hover:scale-105 hover:brightness-110 hover:shadow-lg"
                 >
                     Login
                 </button>
             </form>
-        </div >
+        </div>
+
     );
 };
 
