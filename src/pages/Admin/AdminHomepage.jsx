@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from 'react'
 import { axiosInstance } from '../../config/axiosInstance';
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 
 function AdminHomepage() {
     const [students, setStudents] = useState([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        // Replace with your actual API URL
-        axiosInstance.get("https://your-api-url.com/api/students")
+        axiosInstance.get("/admin/get-data")
             .then((response) => {
-                setStudents(response.data); // Assuming API returns an array of student objects
+                setStudents(response.data);
                 setLoading(false);
             })
             .catch((error) => {
@@ -41,7 +42,7 @@ function AdminHomepage() {
             tableRows.push(studentData);
         });
 
-        doc.autoTable({
+        autoTable(doc, {
             head: [tableColumn],
             body: tableRows,
             startY: 30,
@@ -49,7 +50,6 @@ function AdminHomepage() {
 
         doc.save("students_data.pdf");
     };
-
 
     if (loading) {
         return (
@@ -92,4 +92,4 @@ function AdminHomepage() {
     )
 }
 
-export default AdminHomepage
+export default AdminHomepage;

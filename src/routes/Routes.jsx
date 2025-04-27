@@ -5,6 +5,8 @@ import { ErrorPage } from "../pages/User/ErrorPage";
 import ScrollToTop from "../components/ui/ScrollToTop";
 import RegisterPage from "../pages/User/RegisterPage";
 import AdminHomepage from "../pages/Admin/AdminHomepage";
+import SuccessPage from "../pages/User/SuccessPage";
+import AdminLoginPage from "../pages/Admin/AdminLoginPage";
 
 {/* <Route path="/" element={<HomePage />} /> */ }
 // <Route path="/menu/:menuId" element={<MenuPage />} /> {/* Dynamic Route */}
@@ -30,6 +32,14 @@ export const router = createBrowserRouter([
             {
                 path: "admin-home",
                 element: <AdminHomepage />
+            },
+            {
+                path: "success",
+                element: <SuccessPage />
+            },
+            {
+                path: "admin-login",
+                element: <AdminLoginPage />
             }
         ],
     }
