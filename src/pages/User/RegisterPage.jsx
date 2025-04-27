@@ -1,7 +1,25 @@
-import { useState } from "react";
-import { deleteMenuItem } from "../../services/menuItemService";
+import { useEffect, useState } from "react";
+import { axiosInstance } from "../../config/axiosInstance";
+// import { deleteMenuItem } from "../../services/menuItemService";
 
 const RegisterPage = () => {
+
+    const [isDarkMode, setIsDarkMode] = useState(false);
+
+    useEffect(() => {
+        const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+        setIsDarkMode(mediaQuery.matches);
+
+        const handleChange = (event) => {
+            setIsDarkMode(event.matches);
+        };
+
+        mediaQuery.addEventListener('change', handleChange);
+
+        return () => {
+            mediaQuery.removeEventListener('change', handleChange);
+        };
+    }, []);
 
     const [formData, setFormData] = useState({
         name: "",
@@ -21,7 +39,16 @@ const RegisterPage = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log(formData); // Handle submission
+        console.log(formData);
+        axiosInstance({
+            method: 'post',
+            url: '/user/register',
+            data: formData
+        }).then(function (response) {
+            setFormData("");
+            console.log(response);
+            alert("Registration successfull!");
+        });
     };
 
     return (
@@ -36,7 +63,9 @@ const RegisterPage = () => {
             <div className="min-h-screen bg-gradient-to-br  from-blue-100 via-purple-200 to-pink-100 flex items-center justify-center p-4">
                 <form
                     onSubmit={handleSubmit}
-                    className="w-full max-w-lg p-8 bg-white bg-opacity-80 rounded-xl shadow-xl backdrop-blur-lg"
+                    className={`w-full max-w-lg p-8 rounded-xl shadow-xl backdrop-blur-lg 
+                        ${isDarkMode ? 'bg-gray-800 text-white' : 'bg-white bg-opacity-80 text-black'}
+                      `}
                 >
                     <h2 className="text-3xl font-bold text-center text-purple-700 mb-6">Registration Form</h2>
 

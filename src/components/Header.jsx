@@ -8,11 +8,11 @@ const Header = () => {
     const [menuOpen, setMenuOpen] = useState(false);
 
     return (
-        <header className="shadow-md w-full sm:h-24 h-14 text-white bg-gradient-to-br from-green-300 via-blue-500 to-purple-600">
+        <header style={{ colorScheme: 'light' }} className="shadow-md w-full sm:h-24 h-14 text-white bg-gradient-to-br from-green-300 via-blue-400 to-purple-400">
             <div className="container mx-auto flex items-end ">
                 <div className="flex justify-center items-center  sm:justify-normal w-full">
                     <div className="flex flex-row z-10 justify-center items-center  h-full">
-                        <div className=" w-24 h-24 py-2">
+                        <div className=" w-24 h-24 py-3.5 sm:py-4">
                             <SVGComponent />
                         </div>
                         <Link to="/" className="sm:text-2xl sm:font-bold font-bold ">
