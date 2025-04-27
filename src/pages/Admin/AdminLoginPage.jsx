@@ -63,13 +63,13 @@ const AdminLoginPage = () => {
     return (
         <div
             className={`h-screen flex items-center justify-center p-4 ${isDarkMode
-                    ? 'bg-gray-900'
-                    : 'bg-gradient-to-br from-blue-100 via-purple-200 to-pink-100'
+                ? 'bg-gray-900'
+                : 'bg-gradient-to-br from-blue-100 via-purple-200 to-pink-100'
                 }`}
         >
             <form
                 onSubmit={handleSubmit}
-                className={`w-full max-w-md p-8 rounded-xl shadow-xl ${isDarkMode ? 'bg-gray-800 text-white' : 'bg-white bg-opacity-80 text-black'
+                className={`w-full max-w-md p-8 mb-20 rounded-xl shadow-xl ${isDarkMode ? 'bg-gray-800 text-white' : 'bg-white bg-opacity-80 text-black'
                     }`}
             >
                 <h2

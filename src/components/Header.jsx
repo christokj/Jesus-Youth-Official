@@ -12,9 +12,9 @@ const Header = () => {
             <div className="container mx-auto flex items-center justify-between sm:h-full h-14">
                 <div className="flex justify-center items-center sm:justify-start w-full">
                     <div className="flex items-center  sm:space-x-3 space-x-2">
-                        <div className="w-14 h-auto py-5 ms-2 ">
+                        <Link to="/" className="w-14 h-auto py-5 ms-2 ">
                             <SVGComponent />
-                        </div>
+                        </Link>
                         <Link to="/" className="sm:text-2xl sm:font-bold font-bold text-center sm:text-left">
                             <h2 className="text-md sm:text-xl ">Jesus Youth Chengaloor</h2>
                         </Link>
