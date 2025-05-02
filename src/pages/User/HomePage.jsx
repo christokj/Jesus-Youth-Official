@@ -1,4 +1,5 @@
 import { React, useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 // import { Link } from "react-router-dom";
 
 const HomePage = () => {
@@ -35,8 +36,20 @@ const HomePage = () => {
                 }`}
             />
           ))}
+
+          {/* Overlay content on top of the image */}
+          <div className="absolute visible sm:invisible bottom-0.5 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+            <Link
+              to="/register-page"
+              className="btn btn-sm bg-gradient-to-br from-white via-black to-white text-white w-full 
+                         py-3 rounded-lg font-semibold transition-all duration-300 
+                         hover:scale-105 hover:brightness-110 hover:shadow-lg">
+              Register now
+            </Link>
+          </div>
         </div>
       </div>
+
       {/* <div className="relative h-[411px]">
         <div
           className="absolute inset-0 bg-cover bg-no-repeat"
