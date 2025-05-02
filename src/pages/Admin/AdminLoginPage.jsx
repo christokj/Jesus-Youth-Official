@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import '@fortawesome/fontawesome-free/css/all.min.css';
+import { axiosInstance } from '../../config/axiosInstance';
+import { Toaster, toast } from 'sonner';
 
 const AdminLoginPage = () => {
 
@@ -33,26 +36,57 @@ const AdminLoginPage = () => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
         // Basic validation
         if (!formData.username || !formData.password) {
+            toast.error('Username and password are required.', { icon: '❌' })
             setErrorMessage('Username and password are required.');
             return;
         }
 
-        console.log(formData.username, formData.password);
+        // // Use Vite environment variables
+        // if (
+        //     formData.username === import.meta.env.VITE_ADMIN_USER_NAME &&
+        //     formData.password === import.meta.env.VITE_ADMIN_PASSWORD
+        // ) {
+        //     // Redirect to admin home page after successful login
+        //     navigate('/admin-home');
+        // } else {
+        //     setErrorMessage('Invalid credentials, please try again.');
+        // }
+        console.log(formData)
+        try {
+            const response = await axiosInstance({
+                url: `/admin/login`,
+                method: "POST",
+                data: formData,
+                withCredentials: true,
+            });
+            // console.log(response)
 
-        // Use Vite environment variables
-        if (
-            formData.username === import.meta.env.VITE_ADMIN_USER_NAME &&
-            formData.password === import.meta.env.VITE_ADMIN_PASSWORD
-        ) {
-            // Redirect to admin home page after successful login
-            navigate('/admin-home');
-        } else {
-            setErrorMessage('Invalid credentials, please try again.');
+            let token = response.data.token
+
+            localStorage.setItem('token', token);
+            toast.success("Login Successfull", { icon: '🌟' })
+            navigate('/admin-home', { replace: true });
+
+        } catch (error) {
+            // console.log(error)
+            // setErrorMessage('Invalid credentials, please try again.');
+            // toast.error("Invalid credentials, please try again.", { icon: '🚫' })
+            if (error.response && error.response.data && error.response.data.message) {
+                console.log(error.response.data.message); // 👉 "Wrong password"
+                if (error.response.data.message === "Wrong password" || error.response.data === "Wrong password" || error.response === "Wrong password") {
+                    toast.error("Use your brain bro... ", { icon: '🧠' })
+                } else {
+                    setErrorMessage('Invalid credentials, please try again.');
+                    toast.error("Invalid credentials, please try again.", { icon: '🚫' })
+                }
+            } else {
+                console.error('Network error', error);
+            }
         }
     };
 
@@ -78,8 +112,8 @@ const AdminLoginPage = () => {
                 >
                     Admin Login
                 </h2>
-
-                {errorMessage && <div className="text-red-500 text-center mb-4">{errorMessage}</div>}
+                <Toaster position="top-center" richColors />
+                {/* {errorMessage && <div className=" text-center mb-4">{errorMessage}</div>} */}
 
                 <div className="form-control mb-4">
                     <label className="label">Username</label>
@@ -97,16 +131,16 @@ const AdminLoginPage = () => {
                     <input
                         type={showPassword ? 'text' : 'password'}
                         name="password"
-                        className="input input-bordered w-full"
+                        className="input input-bordered w-full "
                         onChange={handleChange}
                         value={formData.password}
                     />
                     <button
                         type="button"
                         onClick={togglePasswordVisibility}
-                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"
+                        className="absolute right-3 top-2/3 transform -translate-y-1/2 text-gray-500 z-1"
                     >
-                        {showPassword ? (
+                        {!showPassword ? (
                             <i className="fas fa-eye-slash"></i>
                         ) : (
                             <i className="fas fa-eye"></i>

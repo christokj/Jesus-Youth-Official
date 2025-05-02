@@ -43,10 +43,28 @@ const RegisterPage = () => {
         let tempErrors = {};
         const phoneRegex = /^[6-9]\d{9}$/; // Must start with 6, 7, 8, or 9 and be exactly 10 digits
         const mobile = formData.mobile;
+        const name = formData.name;
+        const unit = formData.unit;
+        const address = formData.address;
+        const place = formData.place;
+        const maritalStatus = formData.maritalStatus;
+        const dob = formData.dob;
+        const parish = formData.parish;
+        const age = parseInt(formData.age, 10);
 
         if (!phoneRegex.test(mobile)) {
             tempErrors.mobile = "Please enter a valid mobile number.";
         }
+        if (isNaN(age) || age > 50) {
+            tempErrors.age = "Age must be a number and not more than 50.";
+        }
+        if (!name?.trim()) tempErrors.name = "Name is required.";
+        if (!unit?.trim()) tempErrors.unit = "Unit is required.";
+        if (!address?.trim()) tempErrors.address = "Address is required.";
+        if (!place?.trim()) tempErrors.place = "Place is required.";
+        if (!maritalStatus?.trim()) tempErrors.maritalStatus = "Marital status is required.";
+        if (!dob?.trim()) tempErrors.dob = "Date of birth is required.";
+        if (!parish?.trim()) tempErrors.parish = "Parish is required.";
 
         setErrors(tempErrors);
         return Object.keys(tempErrors).length === 0; // return true if no errors
@@ -82,13 +100,14 @@ const RegisterPage = () => {
                     <h2 className={`text-3xl font-bold text-center mb-6${isDarkMode ? 'text-white' : 'text-gray-700'}`}>Registration Form</h2>
 
                     <div className="form-control mb-4">
-                        <label className="label">Name</label>
+                        <label className="label">Fullname</label>
                         <input
                             type="text"
                             name="name"
                             className="input input-bordered w-full"
                             onChange={handleChange}
                         />
+                        {errors.name && <span className="text-red-500 text-sm">{errors.name}</span>}
                     </div>
 
                     <div className="form-control mb-4">
@@ -99,6 +118,7 @@ const RegisterPage = () => {
                             className="input input-bordered w-full"
                             onChange={handleChange}
                         />
+                        {errors.age && <span className="text-red-500 text-sm">{errors.age}</span>}
                     </div>
 
                     <div className="form-control mb-4">
@@ -140,6 +160,7 @@ const RegisterPage = () => {
                             <option>St Thomas</option>
                             <option>Other</option>
                         </select>
+                        {errors.unit && <span className="text-red-500 text-sm">{errors.unit}</span>}
                     </div>
 
                     <div className="form-control mb-4">
@@ -149,6 +170,7 @@ const RegisterPage = () => {
                             className="textarea textarea-bordered w-full"
                             onChange={handleChange}
                         />
+                        {errors.address && <span className="text-red-500 text-sm">{errors.address}</span>}
                     </div>
 
                     <div className="form-control mb-4">
@@ -170,6 +192,7 @@ const RegisterPage = () => {
                             className="input input-bordered w-full"
                             onChange={handleChange}
                         />
+                        {errors.place && <span className="text-red-500 text-sm">{errors.place}</span>}
                     </div>
 
                     <div className="form-control mb-4">
@@ -185,6 +208,7 @@ const RegisterPage = () => {
                             <option>Divorced</option>
                             <option>Widowed</option>
                         </select>
+                        {errors.maritalStatus && <span className="text-red-500 text-sm">{errors.maritalStatus}</span>}
                     </div>
 
                     <div className="form-control mb-4">
@@ -195,6 +219,8 @@ const RegisterPage = () => {
                             className="input input-bordered w-full"
                             onChange={handleChange}
                         />
+                        {errors.dob && <span className="text-red-500 text-sm">{errors.dob}</span>}
+
                     </div>
 
                     <div className="form-control mb-6">
@@ -209,6 +235,8 @@ const RegisterPage = () => {
                             <option>Chengaloor</option>
                             <option>Other</option>
                         </select>
+                        {errors.parish && <span className="text-red-500 text-sm">{errors.parish}</span>}
+
                     </div>
 
                     <button

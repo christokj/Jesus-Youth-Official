@@ -8,7 +8,7 @@ const Header = () => {
     const [menuOpen, setMenuOpen] = useState(false);
 
     return (
-        <header className="shadow-md w-full sm:h-20 h-14 text-white bg-gradient-to-br from-white via-gray-600 to-white">
+        <header className="shadow-md w-full sm:h-20 h-14 text-white bg-gradient-to-br from-white via-gray-400 to-white">
             <div className="container mx-auto flex items-center justify-between sm:h-full h-14">
                 <div className="flex justify-center items-center sm:justify-start w-full">
                     <div className="flex items-center  sm:space-x-3 space-x-2">

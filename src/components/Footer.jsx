@@ -2,7 +2,7 @@ import React from "react";
 
 const Footer = () => {
   return (
-    <footer className=" text-white bg-gradient-to-br from-black via-gray-600 to-black">
+    <footer className=" text-white bg-gradient-to-br from-gray-800 via-gray-600 to-gray-800">
       <div className="container mx-auto px-6 py-6 grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
 
         {/* Connect Section */}
@@ -36,7 +36,7 @@ const Footer = () => {
           <div className="w-full h-20 rounded-xl overflow-hidden shadow-lg">
             <iframe
               title="Google Map"
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3930.6812644119794!2d76.2756346750402!3d10.373891089731601!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ba7f5b3b4085c7b%3A0x6219ab7b02a0f8eb!2sOur%20Lady%20of%20Mount%20Carmel%20Syro-Malabar%20Catholic%20Church%2C%20Chengaloor!5e0!3m2!1sen!2sin!4v1714224701877!5m2!1sen!2sin"
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3101.559200402916!2d76.3050988!3d10.404627699999999!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ba7f98f65352b87%3A0x41240a2ca733542b!2sOur%20lady%20of%20Mount%20Carmel%20Syro%20Malabar%20Catholic%20Church%20Chengaloor!5e1!3m2!1sen!2sin!4v1745947437016!5m2!1sen!2sin"
               width="100%"
               height="100%"
               style={{ border: 0 }}
