@@ -74,14 +74,12 @@ const RegisterPage = () => {
         e.preventDefault();
 
         if (validateForm()) {
-            console.log(formData);
             axiosInstance({
                 method: 'post',
                 url: '/user/register',
                 data: formData
             }).then(function (response) {
                 setFormData("");
-                console.log(response);
                 alert("Registration successful!");
                 navigate('/success');
             });

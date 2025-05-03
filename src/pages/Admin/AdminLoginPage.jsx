@@ -56,7 +56,6 @@ const AdminLoginPage = () => {
         // } else {
         //     setErrorMessage('Invalid credentials, please try again.');
         // }
-        console.log(formData)
         try {
             const response = await axiosInstance({
                 url: `/admin/login`,
@@ -64,7 +63,6 @@ const AdminLoginPage = () => {
                 data: formData,
                 withCredentials: true,
             });
-            // console.log(response)
 
             let token = response.data.token
 
@@ -73,11 +71,9 @@ const AdminLoginPage = () => {
             navigate('/admin-home', { replace: true });
 
         } catch (error) {
-            // console.log(error)
             // setErrorMessage('Invalid credentials, please try again.');
             // toast.error("Invalid credentials, please try again.", { icon: '🚫' })
             if (error.response && error.response.data && error.response.data.message) {
-                console.log(error.response.data.message); // 👉 "Wrong password"
                 if (error.response.data.message === "Wrong password" || error.response.data === "Wrong password" || error.response === "Wrong password") {
                     toast.error("Use your brain bro... ", { icon: '🧠' })
                 } else {

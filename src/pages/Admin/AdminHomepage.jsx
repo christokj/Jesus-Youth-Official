@@ -16,7 +16,6 @@ function AdminHomepage() {
             setStudents(response.data);
         } catch (error) {
             toast.error('Failed to fetch students');
-            console.error('Error fetching students:', error);
         } finally {
             setLoading(false);
         }
@@ -62,7 +61,6 @@ function AdminHomepage() {
             fetchStudentData();
         } catch (error) {
             toast.error('Failed to delete student');
-            console.error('Error:', error);
         }
     };
 
