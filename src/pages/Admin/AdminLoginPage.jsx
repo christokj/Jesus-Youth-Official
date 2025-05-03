@@ -96,10 +96,8 @@ const AdminLoginPage = () => {
 
     return (
         <div
-            className={`h-screen flex items-center justify-center p-4 ${isDarkMode
-                ? 'bg-gray-900'
-                : 'bg-gradient-to-br from-blue-100 via-purple-200 to-pink-100'
-                }`}
+            className={`min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-blue-100 via-purple-200 to-pink-100`
+            }
         >
             <form
                 onSubmit={handleSubmit}
