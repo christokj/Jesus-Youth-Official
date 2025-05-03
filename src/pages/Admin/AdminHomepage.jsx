@@ -75,7 +75,7 @@ function AdminHomepage() {
     }
 
     return (
-        <div className="min-h-screen bg-gray-100 p-6">
+        <div className="min-h-screen bg-gray-100 p-6 pt-16">
             <Toaster position="top-center" richColors />
 
             <div className="flex justify-between items-center max-w-6xl mx-auto mb-6">

@@ -113,7 +113,8 @@ const AdminLoginPage = () => {
                 <Toaster position="top-center" richColors />
                 {/* {errorMessage && <div className=" text-center mb-4">{errorMessage}</div>} */}
 
-                <div className="form-control mb-4">
+                <div className={`form-control mb-4 ${isDarkMode ? 'text-white' : 'text-gray-700'
+                    }`}>
                     <label className="label">Username</label>
                     <input
                         type="text"
@@ -124,7 +125,8 @@ const AdminLoginPage = () => {
                     />
                 </div>
 
-                <div className="form-control mb-4 relative">
+                <div className={`form-control mb-4 relative ${isDarkMode ? 'text-white' : 'text-gray-700'
+                    }`}>
                     <label className="label">Password</label>
                     <input
                         type={showPassword ? 'text' : 'password'}
