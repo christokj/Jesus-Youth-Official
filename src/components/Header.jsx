@@ -3,12 +3,12 @@ import { Dialog } from "@headlessui/react";
 import { Link } from "react-router-dom";
 import { FaBars, FaTimes } from "react-icons/fa";
 import SVGComponent from "./svg/Logo";
-
+// 
 const Header = () => {
     const [menuOpen, setMenuOpen] = useState(false);
 
     return (
-        <header className="shadow-md w-full sm:h-20 h-14 text-white bg-gradient-to-br from-white via-gray-400 to-white">
+        <header className="shadow-2xl w-full sm:h-20 h-14 text-black bg-transparent absolute sm:static z-10 sm:bg-gradient-to-br sm:from-white sm:via-gray-400 sm:to-white">
             <div className="container mx-auto flex items-center justify-between sm:h-full h-14">
                 <div className="flex justify-center items-center sm:justify-start w-full">
                     <div className="flex items-center  sm:space-x-3 space-x-2">
@@ -25,25 +25,25 @@ const Header = () => {
                 <nav className="hidden sm:flex gap-8 w-full p-6 justify-center">
                     <Link
                         to="/"
-                        className="font-bold text-white hover:text-gray-300 transition-all duration-300 transform hover:scale-110 hover:underline"
+                        className="font-bold text-black hover:text-gray-300 transition-all duration-300 transform hover:scale-110 hover:underline"
                     >
                         HOME
                     </Link>
                     <Link
                         to="/register-page"
-                        className="font-bold text-white hover:text-gray-300 transition-all duration-300 transform hover:scale-110 hover:underline"
+                        className="font-bold text-black hover:text-gray-300 transition-all duration-300 transform hover:scale-110 hover:underline"
                     >
                         REGISTER
                     </Link>
                     <Link
                         to="/admin-login"
-                        className="font-bold text-white hover:text-gray-300 transition-all duration-300 transform hover:scale-110 hover:underline"
+                        className="font-bold text-black hover:text-gray-300 transition-all duration-300 transform hover:scale-110 hover:underline"
                     >
                         ADMIN
                     </Link>
                     <Link
                         to="/contact-page"
-                        className="font-bold text-white hover:text-gray-300 transition-all duration-300 transform hover:scale-110 hover:underline"
+                        className="font-bold text-black hover:text-gray-300 transition-all duration-300 transform hover:scale-110 hover:underline"
                     >
                         CONTACT US
                     </Link>
@@ -51,7 +51,7 @@ const Header = () => {
 
                 {/* Hamburger menu button for mobile */}
                 <div className="flex sm:hidden z-10 mx-6">
-                    <button onClick={() => setMenuOpen(true)} className="text-white">
+                    <button onClick={() => setMenuOpen(true)} className="text-black">
                         <FaBars size={24} />
                     </button>
                 </div>

@@ -3,11 +3,11 @@ import React from "react";
 const Footer = () => {
   return (
     <footer className=" text-white bg-gradient-to-br from-gray-800 via-gray-600 to-gray-800">
-      <div className="container mx-auto px-6 py-6 grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
+      <div className="container mx-auto px-6 py-3 sm:py-6 grid grid-cols-1 md:grid-cols-3 gap-2 sm:gap-8 text-center md:text-left">
 
         {/* Connect Section */}
         <div className="flex flex-col items-center md:items-start">
-          <h3 className="text-2xl font-bold mb-4">Connect With Us</h3>
+          <h3 className="text-xl sm:text-2xl font-bold mb-1 sm:mb-4">Connect With Us</h3>
           <p className="text-gray-400 mb-2">+91 6282130289</p>
           <p className="text-gray-400">
             Email us at{" "}
@@ -22,7 +22,7 @@ const Footer = () => {
 
         {/* Jesus Youth Section */}
         <div className="flex flex-col items-center md:items-start">
-          <h3 className="text-2xl font-bold mb-4">Jesus Youth Chengaloor</h3>
+          <h3 className="text-xl sm:text-2xl font-bold mb-2 sm:mb-4">Jesus Youth Chengaloor</h3>
           <p className="text-gray-400">
             Prayer, Word of God, Sacraments, Fellowship, Evangelization and The option for the poor
           </p>
@@ -30,7 +30,7 @@ const Footer = () => {
 
         {/* Find Us Section with Embedded Map */}
         <div className="flex flex-col items-center md:items-start">
-          <h3 className="text-2xl font-bold mb-4">Find Us</h3>
+          <h3 className="text-xl sm:text-2xl font-bold mb-4">Find Us</h3>
 
           {/* Embedded Map */}
           <div className="w-full h-20 rounded-xl overflow-hidden shadow-lg">
@@ -53,9 +53,9 @@ const Footer = () => {
       <div className="border-t border-gray-800 "></div>
 
       {/* Bottom Bar */}
-      <div className="container mx-auto px-6 py-4 flex flex-col md:flex-row items-center justify-between text-gray-500 text-sm">
+      <div className="container mx-auto px-2 sm:px-6 py-2 flex flex-col md:flex-row items-center justify-between text-gray-500 text-sm">
         <p>© {new Date().getFullYear()} Jesus Youth Chengaloor. All rights reserved.</p>
-        <div className="flex space-x-4 mt-2 md:mt-0">
+        <div className="flex space-x-4 sm:mt-2 md:mt-0">
           <a href="#" className="hover:text-white transition">Terms & Conditions</a>
           <a href="#" className="hover:text-white transition">Privacy Policy</a>
         </div>

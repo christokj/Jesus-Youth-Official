@@ -7,8 +7,6 @@ const HomePage = () => {
   const images = [
     "https://res.cloudinary.com/dfm6raue1/image/upload/v1745768457/Rooted_In_Christ_gualbf.png",
     "https://res.cloudinary.com/dfm6raue1/image/upload/v1745768457/Rooted_In_Christ_gualbf.png",
-    "https://res.cloudinary.com/dfm6raue1/image/upload/v1745768457/Rooted_In_Christ_gualbf.png",
-
   ];
 
   const [currentIndex, setCurrentIndex] = useState(0);
