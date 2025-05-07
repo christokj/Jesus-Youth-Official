@@ -4,22 +4,27 @@ export function useIsChromeOnly() {
     const [isSupported, setIsSupported] = useState(null);
 
     useEffect(() => {
-        const userAgent = navigator.userAgent;
-        const vendor = navigator.vendor;
+        let isChrome = false;
 
-        const isChrome =
-            /Chrome/.test(userAgent) &&
-            /Google Inc/.test(vendor) &&
-            !/OPR/.test(userAgent) &&          // Opera
-            !/Brave/.test(userAgent) &&        // Brave
-            !/SamsungBrowser/.test(userAgent) &&
-            !/UCBrowser/.test(userAgent) &&
-            !/Android/.test(userAgent) &&
-            !/MSIE/.test(userAgent) &&         // IE 10 and older
-            !/Trident/.test(userAgent);        // IE 11
+        if ('userAgentData' in navigator) {
+            const brands = navigator.userAgentData.brands || [];
+            isChrome = brands.some(
+                (b) => b.brand === 'Google Chrome' || b.brand === 'Chromium'
+            );
+        } else {
+            const userAgent = navigator.userAgent;
+            isChrome =
+                /Chrome/.test(userAgent) &&
+                !/OPR/.test(userAgent) &&      // Opera
+                !/Brave/.test(userAgent) &&
+                !/SamsungBrowser/.test(userAgent) &&
+                !/MSIE/.test(userAgent) &&   // IE 10 and older
+                !/Trident/.test(userAgent);   // IE 11
+        }
 
         setIsSupported(isChrome);
     }, []);
+
 
     return isSupported;
 }
