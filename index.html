@@ -11,11 +11,24 @@
 <body>
   <div id="root"></div>
 
-  <!-- Modern browsers (supports ES Modules) -->
+  <!-- For modern browsers -->
   <script type="module" src="/src/main.jsx"></script>
 
-  <!-- Legacy browsers (like IE) -->
-  <script nomodule src="/assets/index-legacy-B449dE4T.js"></script>
+  <!-- For legacy browsers (IE11 and others) -->
+  <!-- <script type="module" src="/src/legacy.js" nomodule></script> -->
+
+  <!-- Fallback message for unsupported browsers -->
+  <script>
+    // Check for support of ES6 features
+    if (!('fetch' in window) || !('Promise' in window) || !('classList' in document.createElement('div'))) {
+      document.body.innerHTML = `
+        <div style="text-align: center; padding: 20px; background-color: #f44336; color: white;">
+          <p>Your browser is outdated and does not support modern web features. Please update your browser for the best experience.</p>
+        </div>
+      `;
+    }
+  </script>
+
 </body>
 
 </html>
