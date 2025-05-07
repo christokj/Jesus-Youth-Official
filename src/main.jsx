@@ -4,6 +4,9 @@ import './index.css'
 import App from './App.jsx'
 import { store } from './redux/store.js'
 import { Provider } from 'react-redux'
+import 'core-js/stable';
+import 'regenerator-runtime/runtime';
+
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>

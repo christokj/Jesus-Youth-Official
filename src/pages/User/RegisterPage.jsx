@@ -91,11 +91,11 @@ const RegisterPage = () => {
             <div className="min-h-screen bg-gradient-to-br  from-blue-100 via-purple-200 to-pink-100 flex items-center justify-center p-4 pt-16">
                 <form
                     onSubmit={handleSubmit}
-                    className={`w-full max-w-[90%] sm:max-w-[500px] md:max-w-[600px] p-6 rounded-xl shadow-xl backdrop-blur-lg 
+                    className={`w-full max-w-[90%] sm:max-w-[500px] md:max-w-[600px] p-6 rounded-xl shadow-2xl backdrop-blur-lg 
                         ${isDarkMode ? 'bg-gray-800 text-white' : 'bg-white bg-opacity-80 text-black'}
                        `}
                 >
-                    <h2 className={`text-3xl font-bold text-center mb-6 ${isDarkMode ? 'text-white' : 'text-gray-700'}`}>Registration Form</h2>
+                    <h2 className={`text-3xl font-bold text-center mb-6 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Registration Form</h2>
 
                     <div className="form-control mb-4">
                         <label className="label">Fullname</label>
