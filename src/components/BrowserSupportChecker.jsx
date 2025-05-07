@@ -6,24 +6,34 @@ export function useIsChromeOnly() {
     useEffect(() => {
         const ua = navigator.userAgent;
 
-        // Check for Chrome (including mobile Chrome 'CriOS')
+        // Use userAgentData if available (modern browsers)
+        if (navigator.userAgentData && navigator.userAgentData.brands) {
+            const brands = navigator.userAgentData.brands.map((b) => b.brand);
+            const isRealChrome =
+                brands.includes('Google Chrome') || brands.includes('Chromium');
+            setIsChrome(isRealChrome);
+            return;
+        }
+
+        // Fallback for older browsers
         const isChromium = ua.includes('Chrome') || ua.includes('CriOS');
+        const isIOS = /iPhone|iPad|iPod/.test(ua);
+        const isSamsung = ua.includes('SamsungBrowser');
+        const isBrave = ua.includes('Brave');
         const isOpera = ua.includes('OPR') || ua.includes('Opera');
         const isEdge = ua.includes('Edg');
-        const isSamsung = ua.includes('SamsungBrowser');
         const isFirefox = ua.includes('Firefox');
-        const isBrave = ua.includes('Brave');
-        const isSafari = ua.includes('Safari') && !ua.includes('Chrome'); // Safari usually shows up with "Safari" but not "Chrome"
-        const isIOS = /iPhone|iPad|iPod/.test(ua);
+        const isGenericMobile = ua.includes('Mobile Safari') && !ua.includes('CriOS');
 
         const isRealChrome =
             isChromium &&
+            !isSamsung &&
+            !isBrave &&
             !isOpera &&
             !isEdge &&
-            !isSamsung &&
             !isFirefox &&
-            !isBrave &&
-            (!isIOS || ua.includes('CriOS')); // Allow Chrome on iOS if it shows CriOS
+            (!isIOS || ua.includes('CriOS')) &&
+            !isGenericMobile;
 
         setIsChrome(isRealChrome);
     }, []);
