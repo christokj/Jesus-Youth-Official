@@ -4,27 +4,19 @@ export function useIsChromeOnly() {
     const [isSupported, setIsSupported] = useState(null);
 
     useEffect(() => {
-        let isChrome = false;
+        const ua = navigator.userAgent || '';
+        const isChromium = ua.includes('Chrome') || ua.includes('CriOS'); // Chrome on iOS
+        // const isOpera = ua.includes('OPR') || ua.includes('Opera');
+        // const isEdge = ua.includes('Edg');
+        const isSamsung = ua.includes('SamsungBrowser');
+        const isFirefox = ua.includes('Firefox');
+        const isBrave = ua.includes('Brave');
+        const isIOSChrome = ua.includes('CriOS') && ua.includes('Mobile');
 
-        if ('userAgentData' in navigator) {
-            const brands = navigator.userAgentData.brands || [];
-            isChrome = brands.some(
-                (b) => b.brand === 'Google Chrome' || b.brand === 'Chromium'
-            );
-        } else {
-            const userAgent = navigator.userAgent;
-            isChrome =
-                /Chrome/.test(userAgent) &&
-                !/OPR/.test(userAgent) &&      // Opera
-                !/Brave/.test(userAgent) &&
-                !/SamsungBrowser/.test(userAgent) &&
-                !/MSIE/.test(userAgent) &&   // IE 10 and older
-                !/Trident/.test(userAgent);   // IE 11
-        }
+        const isChrome = isChromium && !isSamsung && !isFirefox && !isBrave;
 
-        setIsSupported(isChrome);
+        setIsSupported(isChrome || isIOSChrome);
     }, []);
-
 
     return isSupported;
 }
