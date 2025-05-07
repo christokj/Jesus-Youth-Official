@@ -29,7 +29,7 @@ function App() {
         alignItems: 'center',
         justifyContent: 'center'
       }}>
-        Your browser is not supported. Please use Google Chrome.
+        Your browser is not supported this modern website. Please use Google Chrome.
       </div>
     );
   }

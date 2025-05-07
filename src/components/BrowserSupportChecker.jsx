@@ -10,11 +10,9 @@ export function useIsChromeOnly() {
         const isChrome =
             /Chrome/.test(userAgent) &&
             /Google Inc/.test(vendor) &&
-            !/Edg/.test(userAgent) &&          // Edge
             !/OPR/.test(userAgent) &&          // Opera
             !/Brave/.test(userAgent) &&        // Brave
             !/SamsungBrowser/.test(userAgent) &&
-            !/CriOS/.test(userAgent) &&        // Chrome on iOS
             !/UCBrowser/.test(userAgent) &&
             !/Android/.test(userAgent) &&
             !/MSIE/.test(userAgent) &&         // IE 10 and older
