@@ -11,6 +11,12 @@ function AdminHomepage() {
     const [searchTerm, setSearchTerm] = useState('');
     const navigate = useNavigate();
 
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (!token) navigate('/admin-login');
+        else fetchStudentData();
+    }, [navigate]);
+
     const fetchStudentData = async () => {
         try {
             const response = await axiosInstance.get('/admin/get-data');
@@ -22,19 +28,30 @@ function AdminHomepage() {
         }
     };
 
-    useEffect(() => {
-        const token = localStorage.getItem('token');
-        if (!token) {
-            navigate('/admin-login');
-        } else {
-            fetchStudentData();
+    const handlePaidToggle = async (id, paid) => {
+        if (!window.confirm('Are you sure ')) return;
+        try {
+            await axiosInstance.post('/admin/update-paid', { id, paid });
+            setStudents(prev =>
+                prev.map(student =>
+                    student._id === id ? { ...student, paid } : student
+                )
+            );
+            toast.success(`Marked as ${paid ? 'Paid' : 'Unpaid'}`);
+        } catch {
+            toast.error('Failed to update paid status');
         }
-    }, [navigate]);
+    };
 
-    const logout = () => {
-        localStorage.removeItem('token');
-        navigate('/');
-        toast.success('Logged out successfully');
+    const handleDelete = async (id) => {
+        if (!window.confirm('Are you sure you want to delete this student?')) return;
+        try {
+            await axiosInstance.delete(`/admin/delete-student/${id}`);
+            setStudents(prev => prev.filter(student => student._id !== id));
+            toast.success('Student deleted successfully');
+        } catch (error) {
+            toast.error('Failed to delete student');
+        }
     };
 
     const downloadPDF = () => {
@@ -42,39 +59,40 @@ function AdminHomepage() {
         doc.text('Students Data', 14, 20);
         const tableColumn = [
             'No.', 'Name', 'Age', 'Unit', 'Address', 'Mobile',
-            'Place', 'Marital Status', 'DOB', 'Parish'
+            'Place', 'Marital Status', 'DOB', 'Parish', 'Gender', 'Date/Time'
         ];
         const tableRows = filteredStudents.map((student, index) => ([
-            index + 1, student.name, student.age, student.unit, student.address,
-            student.mobile, student.place, student.maritalStatus,
-            student.dob, student.parish
+            index + 1,
+            student.name,
+            student.age || '',
+            student.unit || '',
+            student.address || '',
+            student.mobile || '',
+            student.place || '',
+            student.maritalStatus || '',
+            student.dob || '',
+            student.parish || '',
+            student.gender || '',
+            new Date(student.createdAt).toLocaleString()
         ]));
         autoTable(doc, {
             head: [tableColumn],
             body: tableRows,
             startY: 30,
-            styles: {
-                fontSize: 9,         // optional: slightly smaller text for more space
-                cellPadding: 3       // optional: controls padding inside cells
-            },
-            columnStyles: {
-                0: { cellWidth: 10 },   // No.
-                1: { cellWidth: 30 },   // Name
-                2: { cellWidth: 15 },   // Age
-                3: { cellWidth: 40 },   // Unit
-                4: { cellWidth: 40 },   // Address
-                5: { cellWidth: 25 },   // Mobile
-                6: { cellWidth: 30 },   // Place
-                7: { cellWidth: 25 },   // Marital Status
-                8: { cellWidth: 25 },   // DOB
-                9: { cellWidth: 25 }    // Parish
-            }
+            styles: { fontSize: 9, cellPadding: 3 },
+            columnStyles: { 0: { cellWidth: 10 } }
         });
         doc.save('students_data.pdf');
     };
 
+    const logout = () => {
+        localStorage.removeItem('token');
+        navigate('/');
+        toast.success('Logged out successfully');
+    };
+
     const filteredStudents = students.filter(student =>
-        student.name.toLowerCase().includes(searchTerm.toLowerCase())
+        student.name?.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     if (loading) {
@@ -111,10 +129,29 @@ function AdminHomepage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-6xl mx-auto">
                 {filteredStudents.length > 0 ? (
                     filteredStudents.map((student, index) => (
-                        <div key={index} className="bg-white shadow-md rounded-2xl p-6 hover:shadow-xl transition-all">
+                        <div key={student._id} className="bg-white shadow-md rounded-2xl p-6 hover:shadow-xl transition-all">
                             <div className="flex justify-between items-start">
-                                <h2 className="text-xl font-semibold mb-4 text-gray-700">{student.name}</h2>
-                                {/* Optional: Delete button */}
+                                <h2 className="text-xl font-semibold mb-4 text-gray-700">
+                                    {index + 1}. {student.name}
+                                </h2>
+                                <div className="flex items-center gap-2">
+                                    <label className="flex items-center gap-1">
+                                        <input
+                                            type="checkbox"
+                                            checked={student.paid || false}
+                                            onChange={(e) => handlePaidToggle(student._id, e.target.checked)}
+                                            className="toggle toggle-sm"
+                                        />
+                                        <span className="text-sm">{student.paid ? 'Paid' : 'Unpaid'}</span>
+                                    </label>
+                                    <button
+                                        onClick={() => handleDelete(student._id)}
+                                        className="btn btn-xs btn-error text-white"
+                                        title="Delete student"
+                                    >
+                                        Delete
+                                    </button>
+                                </div>
                             </div>
                             <div className="grid grid-cols-1 gap-2 text-gray-600">
                                 <p><span className="font-bold">Age:</span> {student.age}</p>
@@ -125,6 +162,10 @@ function AdminHomepage() {
                                 <p><span className="font-bold">Marital Status:</span> {student.maritalStatus}</p>
                                 <p><span className="font-bold">DOB:</span> {student.dob}</p>
                                 <p><span className="font-bold">Parish:</span> {student.parish}</p>
+                                {student.gender && <p><span className="font-bold">Gender:</span> {student.gender}</p>}
+                                {student.createdAt && (
+                                    <p><span className="font-bold">Date/Time:</span> {new Date(student.createdAt).toLocaleString()}</p>
+                                )}
                             </div>
                         </div>
                     ))
