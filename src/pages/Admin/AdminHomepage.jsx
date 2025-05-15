@@ -29,7 +29,7 @@ function AdminHomepage() {
     };
 
     const handlePaidToggle = async (id, paid) => {
-        if (!window.confirm('Are you sure ')) return;
+        if (!window.confirm('Are you sure')) return;
         try {
             await axiosInstance.post('/admin/update-paid', { id, paid });
             setStudents(prev =>
@@ -53,6 +53,44 @@ function AdminHomepage() {
             toast.error('Failed to delete student');
         }
     };
+
+    const handleGenderChange = async (id, gender) => {
+        if (!window.confirm(`Change gender to ${gender}?`)) return;
+        try {
+            await axiosInstance.post('/admin/update-gender', { id, gender });
+            setStudents(prev =>
+                prev.map(student =>
+                    student._id === id ? { ...student, gender } : student
+                )
+            );
+            toast.success('Gender updated successfully');
+        } catch {
+            toast.error('Failed to update gender');
+        }
+    };
+
+    const handleWhatsappInvite = (mobile, gender) => {
+        if (!gender) {
+            toast.error('Please select a gender before sending invite.');
+            return;
+        }
+
+        let inviteLink = '';
+
+        if (gender.toLowerCase() === 'male') {
+            inviteLink = 'https://chat.whatsapp.com/Iy7qeRNVStV32le7sEYxC6';
+        } else if (gender.toLowerCase() === 'female') {
+            inviteLink = 'https://chat.whatsapp.com/DS7wiLO1EsFHJR1tJvGqUM';
+        } else {
+            toast.error('Only Male or Female gender are allowed for group invites.');
+            return;
+        }
+
+        const message = `Hi! Join our Rooted in Christ 2k25 WhatsApp group: ${inviteLink}`;
+        const url = `https://wa.me/${mobile}?text=${encodeURIComponent(message)}`;
+        window.open(url, '_blank');
+    };
+
 
     const downloadPDF = () => {
         const doc = new jsPDF('landscape');
@@ -162,10 +200,28 @@ function AdminHomepage() {
                                 <p><span className="font-bold">Marital Status:</span> {student.maritalStatus}</p>
                                 <p><span className="font-bold">DOB:</span> {student.dob}</p>
                                 <p><span className="font-bold">Parish:</span> {student.parish}</p>
-                                {student.gender && <p><span className="font-bold">Gender:</span> {student.gender}</p>}
+                                <p className="flex items-center gap-2">
+                                    <span className="font-bold">Gender:</span>
+                                    <select
+                                        value={student.gender || ''}
+                                        onChange={(e) => handleGenderChange(student._id, e.target.value)}
+                                        className="select select-bordered select-xs"
+                                    >
+                                        <option value="">Select</option>
+                                        <option value="Male">Male</option>
+                                        <option value="Female">Female</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </p>
                                 {student.createdAt && (
                                     <p><span className="font-bold">Date/Time:</span> {new Date(student.createdAt).toLocaleString()}</p>
                                 )}
+                                <button
+                                    onClick={() => handleWhatsappInvite(student.mobile, student.gender)}
+                                    className="btn btn-xs btn-success mt-2"
+                                >
+                                    WhatsApp Invite
+                                </button>
                             </div>
                         </div>
                     ))
