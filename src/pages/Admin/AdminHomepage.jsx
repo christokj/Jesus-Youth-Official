@@ -74,7 +74,7 @@ function AdminHomepage() {
             toast.error('Please select a gender before sending invite.');
             return;
         }
-
+mobile = 91+ mobile
         let inviteLink = '';
 
         if (gender.toLowerCase() === 'male') {
@@ -87,7 +87,7 @@ function AdminHomepage() {
         }
 
         const message = `Hi! Join our Rooted in Christ 2k25 WhatsApp group: ${inviteLink}`;
-        const url = `https://wa.me/${91+mobile}?text=${encodeURIComponent(message)}`;
+        const url = `https://wa.me/${mobile}?text=${encodeURIComponent(message)}`;
         window.open(url, '_blank');
     };
 
