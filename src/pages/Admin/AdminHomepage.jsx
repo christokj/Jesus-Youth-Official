@@ -76,7 +76,6 @@ function AdminHomepage() {
         }
 mobile = 91+ mobile
         let inviteLink = '';
-
         if (gender.toLowerCase() === 'male') {
             inviteLink = 'https://chat.whatsapp.com/Iy7qeRNVStV32le7sEYxC6';
         } else if (gender.toLowerCase() === 'female') {
@@ -86,10 +85,22 @@ mobile = 91+ mobile
             return;
         }
 
+        // Normalize mobile number
+        let cleanedMobile = mobile.toString().replace(/\D/g, ''); // Remove all non-digits
+
+        if (cleanedMobile.length === 10) {
+            // Assuming it's an Indian number without country code
+            cleanedMobile = '91' + cleanedMobile;
+        } else if (!cleanedMobile.startsWith('91')) {
+            toast.error('Invalid mobile number. Must include country code.');
+            return;
+        }
+
         const message = `Hi! Join our Rooted in Christ 2k25 WhatsApp group: ${inviteLink}`;
-        const url = `https://wa.me/${mobile}?text=${encodeURIComponent(message)}`;
+        const url = `https://wa.me/${cleanedMobile}?text=${encodeURIComponent(message)}`;
         window.open(url, '_blank');
     };
+
 
 
     const downloadPDF = () => {
