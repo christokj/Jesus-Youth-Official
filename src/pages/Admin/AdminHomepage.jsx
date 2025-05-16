@@ -74,7 +74,7 @@ function AdminHomepage() {
             toast.error('Please select a gender before sending invite.');
             return;
         }
-mobile = 91+ mobile
+
         let inviteLink = '';
         if (gender.toLowerCase() === 'male') {
             inviteLink = 'https://chat.whatsapp.com/Iy7qeRNVStV32le7sEYxC6';
@@ -89,8 +89,7 @@ mobile = 91+ mobile
         let cleanedMobile = mobile.toString().replace(/\D/g, ''); // Remove all non-digits
 
         if (cleanedMobile.length === 10) {
-            // Assuming it's an Indian number without country code
-            cleanedMobile = '91' + cleanedMobile;
+            cleanedMobile = '91' + cleanedMobile; // ✅ Correct concatenation
         } else if (!cleanedMobile.startsWith('91')) {
             toast.error('Invalid mobile number. Must include country code.');
             return;
@@ -100,6 +99,7 @@ mobile = 91+ mobile
         const url = `https://wa.me/${cleanedMobile}?text=${encodeURIComponent(message)}`;
         window.open(url, '_blank');
     };
+
 
 
 
