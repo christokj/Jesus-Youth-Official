@@ -100,6 +100,20 @@ function AdminHomepage() {
         window.open(url, '_blank');
     };
 
+    const handleVisitedToggle = async (id, visited) => {
+        if (!window.confirm('Are you sure you want to change the visited status?')) return;
+        try {
+            await axiosInstance.post('/admin/update-visited', { id, visited });
+            setStudents(prev =>
+                prev.map(student =>
+                    student._id === id ? { ...student, visited } : student
+                )
+            );
+            toast.success(`Marked as ${visited ? 'Visited' : 'Not Visited'}`);
+        } catch {
+            toast.error('Failed to update visited status');
+        }
+    };
 
 
 
@@ -155,6 +169,11 @@ function AdminHomepage() {
     return (
         <div className="min-h-screen bg-gray-100 p-6 pt-16">
             <Toaster position="top-center" richColors />
+            <div className="bg-white p-4 rounded-xl shadow-md max-w-6xl mx-auto mb-6 grid grid-cols-3 gap-4 text-center text-sm md:text-base font-semibold text-gray-700">
+                <div>Total Students: {students.length}</div>
+                <div>Paid: {students.filter(s => s.paid).length}</div>
+                <div>Visited: {students.filter(s => s.visited).length}</div>
+            </div>
 
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center max-w-6xl mx-auto mb-6 gap-4">
                 <h1 className="text-3xl font-bold text-blue-600">Admin - Students List</h1>
@@ -187,11 +206,21 @@ function AdminHomepage() {
                                     <label className="flex items-center gap-1">
                                         <input
                                             type="checkbox"
+                                            checked={student.visited || false}
+                                            onChange={(e) => handleVisitedToggle(student._id, e.target.checked)}
+                                            className="toggle toggle-sm toggle-success"
+                                        />
+                                        <span className="text-sm text-gray-700">{student.visited ? 'Visited' : 'Not Visited'}</span>
+                                    </label>
+
+                                    <label className="flex items-center gap-1">
+                                        <input
+                                            type="checkbox"
                                             checked={student.paid || false}
                                             onChange={(e) => handlePaidToggle(student._id, e.target.checked)}
                                             className="toggle toggle-sm"
                                         />
-                                        <span className="text-sm">{student.paid ? 'Paid' : 'Unpaid'}</span>
+                                        <span className="text-sm text-gray-700">{student.paid ? 'Paid' : 'Unpaid'}</span>
                                     </label>
                                     <button
                                         onClick={() => handleDelete(student._id)}
