@@ -1,6 +1,7 @@
 import { React, useEffect, useState, Suspense } from "react";
 import { Link } from "react-router-dom";
 import RotatingText from "../../components/HomePage/RotatingText";
+import ParticleWave from "../../components/HomePage/ParticleWave";
 
 const HomePage = () => {
   const images = [
@@ -21,6 +22,9 @@ const HomePage = () => {
     <>
       <Suspense fallback={<div className="p-8 text-white">Loading...</div>}>
         <RotatingText />
+      </Suspense>
+      <Suspense fallback={<div className="p-8 text-white">Loading...</div>}>
+        <ParticleWave />
       </Suspense>
 
       <div className="w-full h-full max-w-full mx-auto overflow-hidden shadow-lg">
