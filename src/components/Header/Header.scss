@@ -1,0 +1,43 @@
+:root {
+    --fw: 600;
+    --fs: 150%;
+}
+
+.stage {
+    display: inline-block;
+    perspective: 1000px;
+    z-index: 10;
+}
+
+.content {
+    overflow: visible;
+}
+
+.title {
+    cursor: grab;
+    user-select: none;
+    font-stretch: var(--fs);
+    font-weight: bolder;
+    display: inline-block;
+    transform-style: preserve-3d;
+    text-shadow:
+        1px 1px 0 #ccc,
+        2px 2px 0 #bbb,
+        3px 3px 0 #aaa;
+}
+
+.char {
+    display: inline-block;
+    white-space: pre;
+    user-select: none;
+    transform: rotateX(15deg) rotateY(25deg);
+    transform-style: preserve-3d;
+    text-shadow:
+        2px 2px 0 #ccc,
+        2px 2px 0 #bbb,
+        3px 3px 0 #aaa;
+}
+
+body.grab {
+    cursor: grabbing !important;
+}

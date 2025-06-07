@@ -108,11 +108,13 @@ const RegisterPage = () => {
         if (validateForm()) {
             setIsSubmitting(true);
             try {
-                await axiosInstance.post('/user/register', formData);
-                // alert("Registration successful!");
-                toast.success("Registration successful!", { icon: '🌟' })
+                toast.success("Vere vella panikkum podo");
+                // await axiosInstance.post('/user/register', formData);
+                // // alert("Registration successful!");
+                // toast.success("Registration successful!", { icon: '🌟' })
 
-                navigate('/success');
+                // navigate('/success');
+                navigate('/');
             } catch (error) {
                 alert("Something went wrong. Please try again.");
             } finally {
