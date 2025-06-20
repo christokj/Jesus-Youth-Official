@@ -20,12 +20,16 @@ const HomePage = () => {
 
   return (
     <>
-      <Suspense fallback={<div className="p-8 text-white">Loading...</div>}>
-        <RotatingText />
-      </Suspense>
-      <Suspense fallback={<div className="p-8 text-white">Loading...</div>}>
-        <ParticleWave />
-      </Suspense>
+      <div className="hidden md:block ">
+
+        <Suspense fallback={<div className="p-8 text-white">Loading...</div>}>
+          <RotatingText />
+        </Suspense>
+
+        <Suspense fallback={<div className="p-8  text-white">Loading...</div>}>
+          <ParticleWave />
+        </Suspense>
+      </div>
 
       <div className="w-full h-full max-w-full mx-auto overflow-hidden shadow-lg">
         <div className="relative w-full h-96">

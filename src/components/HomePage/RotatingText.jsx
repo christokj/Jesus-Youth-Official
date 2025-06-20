@@ -105,7 +105,7 @@ const RotatingText = () => {
     }, []);
 
     return (
-        <div className="rotating-stage" ref={stageRef}>
+        <div className="rotating-stage " ref={stageRef}>
             <div className="rotating-tube" ref={tubeRef}>
                 <div className="rotating-tube__inner" ref={tubeInnerRef}>
                     <h1 className="rotating-line">Jesus Youth Chengaloor</h1>

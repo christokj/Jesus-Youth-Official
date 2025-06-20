@@ -1,10 +1,9 @@
 import React from "react";
-import logo from "../../assets/logo.png"; // adjust path based on your project structure
 
 const Logo = () => {
     return (
         <img
-            src={logo}
+            src={`https://res.cloudinary.com/dfm6raue1/image/upload/v1750397101/20211229_221839__1_-removebg-preview_sayl4j.png`}
             alt="Logo"
             loading="lazy"
             className="w-full h-auto object-contain"
