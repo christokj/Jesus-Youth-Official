@@ -9,8 +9,6 @@ import SuccessPage from "../pages/User/SuccessPage";
 import AdminLoginPage from "../pages/Admin/AdminLoginPage";
 import ContactPage from "../pages/User/ContactPage";
 
-{/* <Route path="/" element={<HomePage />} /> */ }
-// <Route path="/menu/:menuId" element={<MenuPage />} /> {/* Dynamic Route */}
 
 export const router = createBrowserRouter([
     {

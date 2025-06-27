@@ -1,5 +1,4 @@
 import { RouterProvider } from "react-router-dom";
-import './App.css';
 import { Toaster } from 'sonner';
 import { router } from './routes/Routes';
 import { useIsChromeOnly } from "./components/BrowserSupportChecker";
