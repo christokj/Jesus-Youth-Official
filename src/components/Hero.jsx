@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 
 import { styles } from "../styles";
+import FlowerCircle from "./HomePage/FlowerCircle";
 
 const Hero = () => {
 
@@ -15,6 +16,7 @@ const Hero = () => {
           {/* <h1 className={`${styles.heroHeadText} text-white`}>
             Hi, I'm <span className='text-[#915EFF]'>Christo</span>
           </h1> */}
+          {/* <FlowerCircle /> */}
           <p className={`${styles.heroSubText} mt-2 text-white-100`}>
             {/* Jesus Youth is an international Catholic movement that challenges young people to live a meaningful, creative and fulfilling life. */}
           </p>

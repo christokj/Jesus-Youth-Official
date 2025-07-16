@@ -22,10 +22,10 @@ const Navbar = () => {
 
   return (
     <nav
-      className={`${styles.paddingX} w-full fixed top-0 z-50 transition-all duration-300 ${scrolled ? "bg-primary shadow-md" : "bg-transparent"
+      className={`${styles.paddingX} w-full fixed top-5  z-50 transition-all duration-300 ${scrolled ? "bg-primary shadow-md" : "bg-transparent"
         }`}
     >
-      <div className="max-w-7xl mx-auto flex justify-between items-center py-4 sm:py-5">
+      <div className="max-w-7xl mx-auto flex justify-around sm:justify-around items-center py-4 sm:py-5">
         {/* Logo Section */}
         <Link
           to="/"
