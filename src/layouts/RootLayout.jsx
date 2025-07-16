@@ -11,7 +11,7 @@ export const RootLayout = () => {
             {/* <Suspense fallback={<SkeletonHeader />}>
                 <Header />
             </Suspense> */}
-            <div >
+            <div className="min-h-96 pt-14 sm:pt-20" >
                 <Outlet />
             </div>
             {/* <Footer /> */}
