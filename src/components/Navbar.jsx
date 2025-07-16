@@ -13,46 +13,45 @@ const Navbar = () => {
   useEffect(() => {
     const handleScroll = () => {
       const scrollTop = window.scrollY;
-      if (scrollTop > 100) {
-        setScrolled(true);
-      } else {
-        setScrolled(false);
-      }
+      setScrolled(scrollTop > 100);
     };
 
     window.addEventListener("scroll", handleScroll);
-
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   return (
     <nav
-      className={`${styles.paddingX
-        } w-full flex items-center py-5  fixed top-0 z-20 ${scrolled ? "bg-primary" : "bg-transparent"
+      className={`${styles.paddingX} w-full fixed top-0 z-50 transition-all duration-300 ${scrolled ? "bg-primary shadow-md" : "bg-transparent"
         }`}
     >
-      <div className='w-full flex justify-between items-center max-w-7xl mx-auto mt-5'>
+      <div className="max-w-7xl mx-auto flex justify-between items-center py-4 sm:py-5">
+        {/* Logo Section */}
         <Link
-          to='/'
-          className='flex items-center gap-2'
+          to="/"
+          className="flex items-center gap-2"
           onClick={() => {
             setActive("");
             window.scrollTo(0, 0);
           }}
         >
-          <img src={'https://res.cloudinary.com/dfm6raue1/image/upload/v1750397101/20211229_221839__1_-removebg-preview_sayl4j.png'} alt='logo' className='w-14 h-14 object-contain' />
-          <p className='text-white text-[18px] sm:text-[22px] font-bold cursor-pointer flex '>
-            Jesus Youth &nbsp;
-            Chengaloor
+          <img
+            src="https://res.cloudinary.com/dfm6raue1/image/upload/v1750397101/20211229_221839__1_-removebg-preview_sayl4j.png"
+            alt="logo"
+            className="w-12 sm:w-14 h-12 sm:h-14 object-contain"
+          />
+          <p className="text-white text-[16px] sm:text-[20px] font-bold cursor-pointer">
+            Jesus Youth <span className="hidden sm:inline">&nbsp;Chengaloor</span>
           </p>
         </Link>
 
-        <ul className='list-none hidden sm:flex flex-row gap-10'>
+        {/* Desktop Menu */}
+        <ul className="hidden sm:flex gap-8">
           {navLinks.map((nav) => (
             <li
               key={nav.id}
-              className={`${active === nav.title ? "text-white" : "text-gray-500"
-                } hover:text-white text-[18px] font-medium cursor-pointer`}
+              className={`text-[16px] font-medium cursor-pointer transition-colors ${active === nav.title ? "text-white" : "text-gray-400 hover:text-white"
+                }`}
               onClick={() => setActive(nav.title)}
             >
               <a href={`#${nav.id}`}>{nav.title}</a>
@@ -60,27 +59,29 @@ const Navbar = () => {
           ))}
         </ul>
 
-        <div className='sm:hidden flex flex-1 justify-end items-center'>
+        {/* Mobile Menu Icon */}
+        <div className="sm:hidden flex items-center">
           <img
             src={toggle ? close : menu}
-            alt='menu'
-            className='w-[28px] h-[28px] object-contain'
+            alt="menu"
+            className="w-7 h-7 object-contain cursor-pointer"
             onClick={() => setToggle(!toggle)}
           />
 
+          {/* Mobile Dropdown */}
           <div
-            className={`${!toggle ? "hidden" : "flex"
-              } p-6 black-gradient absolute top-20 right-0 mx-4 my-2 min-w-[140px] z-10 rounded-xl`}
+            className={`${toggle ? "flex" : "hidden"
+              } absolute top-16 right-4 bg-black bg-opacity-90 px-6 py-4 rounded-xl z-50`}
           >
-            <ul className='list-none flex justify-end items-start flex-1 flex-col gap-4'>
+            <ul className="flex flex-col gap-4">
               {navLinks.map((nav) => (
                 <li
                   key={nav.id}
-                  className={`font-poppins font-medium cursor-pointer text-[16px] ${active === nav.title ? "text-white" : "text-secondary"
+                  className={`text-[16px] font-medium cursor-pointer ${active === nav.title ? "text-white" : "text-gray-400 hover:text-white"
                     }`}
                   onClick={() => {
-                    setToggle(!toggle);
                     setActive(nav.title);
+                    setToggle(false);
                   }}
                 >
                   <a href={`#${nav.id}`}>{nav.title}</a>

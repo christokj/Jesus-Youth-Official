@@ -5,20 +5,20 @@ const StarsCanvas = lazy(() => import("../../components/canvas/Stars"));
 
 const HomePage = () => {
 
-
   return (
-    <>
 
-      <div className="relative z-0 ">
-        <div className=" w-full h-screen  ">
-          <Navbar />
-          <Hero />
-          <Contact />
+    <div className="relative z-0 ">
+      <div className=" w-full h-screen  ">
+        <Navbar />
+        <Hero />
+        <Contact />
+        <Suspense fallback={<h1></h1>}>
           <StarsCanvas />
-        </div>
-      </div >
+        </Suspense>
 
-    </>
+      </div>
+    </div >
+
   );
 };
 

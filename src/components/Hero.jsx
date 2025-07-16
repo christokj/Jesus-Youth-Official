@@ -6,7 +6,7 @@ const Hero = () => {
 
 
   return (
-    <section className={`relative w-full h-screen mx-auto`} id="home">
+    <section className={`relative w-full h-screen pt-16`} id="home">
       <div
         className={`absolute inset-0 top-[120px]  max-w-7xl mx-auto ${styles.paddingX} flex flex-row items-start gap-5`}
       >

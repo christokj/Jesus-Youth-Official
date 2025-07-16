@@ -14,9 +14,9 @@ export const router = createBrowserRouter([
     {
         path: "/",
         element: (
-            <ScrollToTop>
-                <RootLayout />
-            </ScrollToTop>
+            // <ScrollToTop>
+            <RootLayout />
+            // </ScrollToTop>
         ),
         errorElement: <ErrorPage />,
         children: [

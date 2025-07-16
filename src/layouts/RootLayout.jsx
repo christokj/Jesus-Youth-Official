@@ -11,10 +11,13 @@ export const RootLayout = () => {
             {/* <Suspense fallback={<SkeletonHeader />}>
                 <Header />
             </Suspense> */}
-            <div className="min-h-96 pt-14 sm:pt-20" >
-                <Outlet />
+            <div className="min-h-screen flex flex-col" >
+                <main>
+
+                    <Outlet />
+                </main>
+                {/* <Footer /> */}
             </div>
-            {/* <Footer /> */}
         </>
     );
 };
