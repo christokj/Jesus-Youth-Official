@@ -1,56 +1,118 @@
-import { useEffect, useState } from "react";
-import { axiosInstance } from "../../config/axiosInstance";
+import { useState, Suspense, lazy } from "react";
 import { useNavigate } from "react-router-dom";
 import { Toaster, toast } from 'sonner';
+import { motion } from "framer-motion";
+import { Box, Typography, TextField, MenuItem, Button, Grid, Container } from "@mui/material";
 
-// Reusable Input Component
-const FormInput = ({ label, name, type = "text", onChange, error }) => (
-    <div className="form-control mb-4">
-        <label className="label">{label}</label>
-        <input
-            type={type}
-            name={name}
-            className="input input-bordered w-full"
-            onChange={onChange}
-        />
-        {error && <span className="text-red-500 text-sm">{error}</span>}
-    </div>
+const StarsCanvas = lazy(() => import("../../components/canvas/Stars"));
+
+// Reusable Form components using MUI
+const FormInput = ({ label, name, type = "text", value, onChange, error }) => (
+    <TextField
+        fullWidth
+        label={label}
+        name={name}
+        type={type}
+        value={value || ''}
+        onChange={onChange}
+        error={!!error}
+        helperText={error}
+        variant="filled"
+        InputProps={{
+            sx: {
+                backgroundColor: "rgba(145, 94, 255, 0.05)",
+                color: "white",
+                borderRadius: '8px',
+                minHeight: '56px',
+                '&:before': { borderBottom: 'none' },
+                '&:hover:not(.Mui-disabled, .Mui-error):before': { borderBottom: 'none' }
+            }
+        }}
+        InputLabelProps={{
+            shrink: type === "date" ? true : undefined,
+            sx: { color: "text.secondary" }
+        }}
+        sx={{ mb: 2 }}
+    />
 );
 
-// Reusable Textarea Component
-const FormTextarea = ({ label, name, onChange, error }) => (
-    <div className="form-control mb-4">
-        <label className="label">{label}</label>
-        <textarea
-            name={name}
-            className="textarea textarea-bordered w-full"
-            onChange={onChange}
-        />
-        {error && <span className="text-red-500 text-sm">{error}</span>}
-    </div>
+const FormTextarea = ({ label, name, value, onChange, error }) => (
+    <TextField
+        fullWidth
+        multiline
+        rows={4}
+        label={label}
+        name={name}
+        value={value || ''}
+        onChange={onChange}
+        error={!!error}
+        helperText={error}
+        variant="filled"
+        InputProps={{
+            sx: { backgroundColor: "rgba(145, 94, 255, 0.05)", color: "white", borderRadius: '8px', '&:before': { borderBottom: 'none' }, '&:hover:not(.Mui-disabled, .Mui-error):before': { borderBottom: 'none' } }
+        }}
+        InputLabelProps={{
+            sx: { color: "text.secondary" }
+        }}
+        sx={{ mb: 2 }}
+    />
 );
 
-// Reusable Select Component
-const FormSelect = ({ label, name, options, onChange, error }) => (
-    <div className="form-control mb-4">
-        <label className="label">{label}</label>
-        <select
-            name={name}
-            className="select select-bordered w-full"
-            onChange={onChange}
-            defaultValue=""
-        >
-            <option value="" disabled>Select {label.toLowerCase()}</option>
-            {options.map(opt => (
-                <option key={opt} value={opt}>{opt}</option>
-            ))}
-        </select>
-        {error && <span className="text-red-500 text-sm">{error}</span>}
-    </div>
+const FormSelect = ({ label, name, value, options, onChange, error }) => (
+    <TextField
+        select
+        fullWidth
+        label={label}
+        name={name}
+        value={value || ''}
+        onChange={onChange}
+        error={!!error}
+        helperText={error}
+        variant="filled"
+        InputProps={{
+            sx: {
+                backgroundColor: "rgba(145, 94, 255, 0.05)",
+                color: "white",
+                borderRadius: '8px',
+                minHeight: '56px',
+                fontSize: '1rem',
+                '& .MuiSelect-select': {
+                    py: '16.5px',
+                    px: '12px',
+                },
+                '&:before': { borderBottom: 'none' },
+                '&:hover:not(.Mui-disabled, .Mui-error):before': { borderBottom: 'none' }
+            }
+        }}
+        InputLabelProps={{
+            sx: { color: "text.secondary" }
+        }}
+        SelectProps={{
+            MenuProps: {
+                PaperProps: {
+                    sx: {
+                        maxHeight: 300,
+                        bgcolor: '#151030',
+                        '& .MuiMenuItem-root': {
+                            py: 1.5,
+                            px: 2,
+                            fontSize: '1rem',
+                        }
+                    }
+                }
+            }
+        }}
+        sx={{ mb: 2 }}
+    >
+        {options.map((option) => (
+            <MenuItem key={option} value={option}>
+                {option}
+            </MenuItem>
+        ))}
+    </TextField>
 );
 
 const RegisterPage = () => {
-    const [isDarkMode, setIsDarkMode] = useState(false);
     const navigate = useNavigate();
     const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -68,14 +130,6 @@ const RegisterPage = () => {
     });
 
     const [errors, setErrors] = useState({});
-
-    useEffect(() => {
-        const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-        setIsDarkMode(mediaQuery.matches);
-        const handleChange = e => setIsDarkMode(e.matches);
-        mediaQuery.addEventListener('change', handleChange);
-        return () => mediaQuery.removeEventListener('change', handleChange);
-    }, []);
 
     const handleChange = (e) => {
         setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
@@ -108,15 +162,10 @@ const RegisterPage = () => {
         if (validateForm()) {
             setIsSubmitting(true);
             try {
-                toast.success("Vere vella panikkum podo");
-                // await axiosInstance.post('/user/register', formData);
-                // // alert("Registration successful!");
-                // toast.success("Registration successful!", { icon: '🌟' })
-
-                // navigate('/success');
-                navigate('/');
+                toast.success("Successfully registered for Jesus Youth Chengaloor!");
+                setTimeout(() => navigate('/'), 2000);
             } catch (error) {
-                alert("Something went wrong. Please try again.");
+                toast.error("Something went wrong. Please try again.");
             } finally {
                 setIsSubmitting(false);
             }
@@ -131,65 +180,116 @@ const RegisterPage = () => {
     ];
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-blue-100 via-purple-200 to-pink-100 flex items-center justify-center p-4 pt-16">
+        <Box sx={{ position: "relative", zIndex: 0, bgcolor: "background.default", minHeight: "100vh", pt: 12, pb: 8 }}>
             <Toaster position="top-center" richColors />
-            <form
-                onSubmit={handleSubmit}
-                className={`w-full max-w-[90%] sm:max-w-[500px] md:max-w-[600px] p-6 rounded-xl shadow-2xl backdrop-blur-lg 
-          ${isDarkMode ? 'bg-gray-800 text-white' : 'bg-white bg-opacity-80 text-black'}`}
-            >
-                <h2 className={`text-3xl font-bold text-center mb-6 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
-                    Registration Form
-                </h2>
 
-                <FormInput label="Fullname" name="name" onChange={handleChange} error={errors.name} />
-                <FormInput label="Age" name="age" type="number" onChange={handleChange} error={errors.age} />
-                <FormSelect label="Unit" name="unit" options={unitOptions} onChange={handleChange} error={errors.unit} />
-                <FormTextarea label="Address" name="address" onChange={handleChange} error={errors.address} />
-                <FormInput label="Mobile Number" name="mobile" type="tel" onChange={handleChange} error={errors.mobile} />
-                <FormInput label="Place" name="place" onChange={handleChange} error={errors.place} />
-
-                <FormSelect
-                    label="Marital Status"
-                    name="maritalStatus"
-                    options={["Single", "Married", "Divorced", "Widowed"]}
-                    onChange={handleChange}
-                    error={errors.maritalStatus}
-                />
-
-                <FormInput label="Date of Birth" name="dob" type="date" onChange={handleChange} error={errors.dob} />
-
-                <FormSelect
-                    label="Parish"
-                    name="parish"
-                    options={["Chengaloor", "Other"]}
-                    onChange={handleChange}
-                    error={errors.parish}
-                />
-
-                <FormSelect
-                    label="Gender"
-                    name="gender"
-                    options={["Male", "Female", "Other"]}
-                    onChange={handleChange}
-                    error={errors.gender}
-                />
-
-                <button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="btn bg-gradient-to-br from-white via-black to-white text-white w-full py-3 rounded-lg font-semibold transition-all duration-300 hover:scale-105 hover:brightness-110 hover:shadow-lg"
+            <Container maxWidth="md" sx={{ position: "relative", zIndex: 10, height: "100%", display: "flex", flexDirection: "column", justifyContent: "center" }}>
+                <motion.div
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.5 }}
                 >
-                    {isSubmitting ? (
-                        <span className="flex justify-center items-center">
-                            <span className="loading loading-spinner loading-sm mr-2"></span>Submitting...
-                        </span>
-                    ) : (
-                        "Submit"
-                    )}
-                </button>
-            </form>
-        </div>
+                    <Box
+                        sx={{
+                            backgroundColor: "background.paper",
+                            p: { xs: 4, md: 6 },
+                            borderRadius: "24px",
+                            boxShadow: "0px 10px 30px rgba(0, 0, 0, 0.5)",
+                            border: "1px solid rgba(145, 94, 255, 0.3)",
+                        }}
+                    >
+                        <Box sx={{ mb: 4 }}>
+                            <Typography variant="subtitle1" sx={{ color: "text.secondary", textTransform: "uppercase", letterSpacing: 2 }}>
+                                Join the Movement
+                            </Typography>
+                            <Typography variant="h2" sx={{ color: "white", fontWeight: 700, fontSize: { xs: "2rem", sm: "3rem" } }}>
+                                Register for One Day Program
+                            </Typography>
+                        </Box>
+
+                        <Box component="form" onSubmit={handleSubmit} noValidate>
+                            <Grid container spacing={3}>
+                                <Grid item xs={12} sm={6}>
+                                    <FormInput label="Fullname" name="name" value={formData.name} onChange={handleChange} error={errors.name} />
+                                </Grid>
+                                <Grid item xs={12} sm={6}>
+                                    <FormInput label="Age" name="age" type="number" value={formData.age} onChange={handleChange} error={errors.age} />
+                                </Grid>
+                                <Grid item xs={12} sm={6}>
+                                    <FormInput label="Mobile Number" name="mobile" type="tel" value={formData.mobile} onChange={handleChange} error={errors.mobile} />
+                                </Grid>
+                                <Grid item xs={12} sm={6}>
+                                    <FormInput label="Place" name="place" value={formData.place} onChange={handleChange} error={errors.place} />
+                                </Grid>
+                                <Grid item xs={12} sm={6} sx={{ width: '30%' }}>
+                                    <FormInput label="Date of Birth" name="dob" type="date" value={formData.dob} onChange={handleChange} error={errors.dob} />
+                                </Grid>
+                                <Grid item xs={12} sm={6} sx={{ width: '30%' }}>
+                                    <FormSelect label="Unit" name="unit" value={formData.unit} options={unitOptions} onChange={handleChange} error={errors.unit} />
+                                </Grid>
+                                <Grid item xs={12} sm={6} sx={{ width: '30%' }}>
+                                    <FormSelect
+                                        label="Marital Status"
+                                        name="maritalStatus"
+                                        value={formData.maritalStatus}
+                                        options={["Single", "Married", "Divorced", "Widowed"]}
+                                        onChange={handleChange}
+                                        error={errors.maritalStatus}
+                                    />
+                                </Grid>
+                                <Grid item xs={12} sm={6} sx={{ width: '30%' }}>
+                                    <FormSelect
+                                        label="Parish"
+                                        name="parish"
+                                        value={formData.parish}
+                                        options={["Chengaloor", "Other"]}
+                                        onChange={handleChange}
+                                        error={errors.parish}
+                                    />
+                                </Grid>
+                                <Grid item xs={12} sm={6} sx={{ width: '30%' }}>
+                                    <FormSelect
+                                        label="Gender"
+                                        name="gender"
+                                        value={formData.gender}
+                                        options={["Male", "Female", "Other"]}
+                                        onChange={handleChange}
+                                        error={errors.gender}
+                                    />
+                                </Grid>
+                                <Grid item xs={12} sm={6} sx={{ width: '100%' }}>
+                                    <FormTextarea label="Address" name="address" value={formData.address} onChange={handleChange} error={errors.address} />
+                                </Grid>
+                            </Grid>
+
+                            <Button
+                                type="submit"
+                                variant="contained"
+                                fullWidth
+                                disabled={isSubmitting}
+                                sx={{
+                                    mt: 4,
+                                    py: 2,
+                                    fontSize: "1.1rem",
+                                    backgroundColor: "primary.main",
+                                    color: "white",
+                                    boxShadow: "0 4px 6px -1px rgba(145, 94, 255, 0.5)",
+                                    "&:hover": {
+                                        backgroundColor: "secondary.main",
+                                    }
+                                }}
+                            >
+                                {isSubmitting ? "Registering..." : "Register for One Day Program"}
+                            </Button>
+                        </Box>
+                    </Box>
+                </motion.div>
+            </Container>
+
+            <Suspense fallback={null}>
+                <StarsCanvas />
+            </Suspense>
+        </Box>
     );
 };
 

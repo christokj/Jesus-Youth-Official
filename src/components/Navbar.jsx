@@ -1,14 +1,26 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-
-import { styles } from "../styles";
+import { Link, useLocation } from "react-router-dom";
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  Box,
+  Button,
+  IconButton,
+  Drawer,
+  List,
+  ListItem,
+  ListItemText,
+} from "@mui/material";
+import MenuIcon from "@mui/icons-material/Menu";
+import CloseIcon from "@mui/icons-material/Close";
 import { navLinks } from "../constants";
-import { menu, close } from "../assets";
 
 const Navbar = () => {
   const [active, setActive] = useState("");
-  const [toggle, setToggle] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const location = useLocation();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -20,78 +32,136 @@ const Navbar = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  return (
-    <nav
-      className={`${styles.paddingX} w-full fixed top-5  z-50 transition-all duration-300 ${scrolled ? "bg-primary shadow-md" : "bg-transparent"
-        }`}
-    >
-      <div className="max-w-7xl mx-auto flex justify-around sm:justify-around items-center py-4 sm:py-5">
-        {/* Logo Section */}
-        <Link
-          to="/"
-          className="flex items-center gap-2"
-          onClick={() => {
-            setActive("");
-            window.scrollTo(0, 0);
+  const handleDrawerToggle = () => {
+    setMobileOpen(!mobileOpen);
+  };
+
+  const navContent = (
+    <Box sx={{ display: "flex", alignItems: "center", gap: 3 }}>
+      {navLinks.map((nav) => (
+        <Button
+          key={nav.id}
+          component={nav.id === "register-page" ? Link : "a"}
+          to={nav.id === "register-page" ? "/register-page" : undefined}
+          href={nav.id !== "register-page" ? `/#${nav.id}` : undefined}
+          onClick={() => setActive(nav.title)}
+          variant={nav.id === "register-page" ? "contained" : "text"}
+          color={nav.id === "register-page" ? "primary" : "inherit"}
+          sx={{
+            color: active === nav.title || nav.id === "register-page" ? "white" : "text.secondary",
+            fontWeight: "medium",
+            "&:hover": { color: "white" },
+            boxShadow: nav.id === "register-page" ? "0 4px 6px -1px var(--primary)" : "none",
           }}
         >
-          <img
-            src="https://res.cloudinary.com/dfm6raue1/image/upload/v1750397101/20211229_221839__1_-removebg-preview_sayl4j.png"
-            alt="logo"
-            className="w-12 sm:w-14 h-12 sm:h-14 object-contain"
-          />
-          <p className="text-white text-[16px] sm:text-[20px] font-bold cursor-pointer">
-            Jesus Youth <span className="hidden sm:inline">&nbsp;Chengaloor</span>
-          </p>
-        </Link>
+          {nav.title}
+        </Button>
+      ))}
+    </Box>
+  );
 
-        {/* Desktop Menu */}
-        <ul className="hidden sm:flex gap-8">
-          {navLinks.map((nav) => (
-            <li
-              key={nav.id}
-              className={`text-[16px] font-medium cursor-pointer transition-colors ${active === nav.title ? "text-white" : "text-gray-400 hover:text-white"
-                }`}
-              onClick={() => setActive(nav.title)}
-            >
-              <a href={`#${nav.id}`}>{nav.title}</a>
-            </li>
-          ))}
-        </ul>
-
-        {/* Mobile Menu Icon */}
-        <div className="sm:hidden flex items-center">
-          <img
-            src={toggle ? close : menu}
-            alt="menu"
-            className="w-7 h-7 object-contain cursor-pointer"
-            onClick={() => setToggle(!toggle)}
-          />
-
-          {/* Mobile Dropdown */}
-          <div
-            className={`${toggle ? "flex" : "hidden"
-              } absolute top-16 right-4 bg-black bg-opacity-90 px-6 py-4 rounded-xl z-50`}
+  const drawerContent = (
+    <Box
+      sx={{
+        width: 250,
+        backgroundColor: "background.default",
+        height: "100%",
+        display: "flex",
+        flexDirection: "column",
+        p: 2,
+      }}
+      role="presentation"
+      onClick={handleDrawerToggle}
+    >
+      <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 2 }}>
+        <IconButton onClick={handleDrawerToggle} sx={{ color: "white" }}>
+          <CloseIcon />
+        </IconButton>
+      </Box>
+      <List>
+        {navLinks.map((nav) => (
+          <ListItem
+            button
+            key={nav.id}
+            component={nav.id === "register-page" ? Link : "a"}
+            to={nav.id === "register-page" ? "/register-page" : undefined}
+            href={nav.id !== "register-page" ? `/#${nav.id}` : undefined}
+            onClick={() => setActive(nav.title)}
+            sx={{
+              textAlign: "center",
+              bgcolor: nav.id === "register-page" ? "primary.main" : "transparent",
+              color: active === nav.title || nav.id === "register-page" ? "white" : "text.secondary",
+              borderRadius: nav.id === "register-page" ? 2 : 0,
+              mb: 1,
+              "&:hover": { color: "white" },
+            }}
           >
-            <ul className="flex flex-col gap-4">
-              {navLinks.map((nav) => (
-                <li
-                  key={nav.id}
-                  className={`text-[16px] font-medium cursor-pointer ${active === nav.title ? "text-white" : "text-gray-400 hover:text-white"
-                    }`}
-                  onClick={() => {
-                    setActive(nav.title);
-                    setToggle(false);
-                  }}
-                >
-                  <a href={`#${nav.id}`}>{nav.title}</a>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-      </div>
-    </nav>
+            <ListItemText primary={nav.title} primaryTypographyProps={{ fontWeight: "medium" }} />
+          </ListItem>
+        ))}
+      </List>
+    </Box>
+  );
+
+  return (
+    <>
+      <AppBar
+        position="fixed"
+        elevation={scrolled ? 4 : 0}
+        sx={{
+          backgroundColor: scrolled ? "background.default" : "transparent",
+          transition: "all 0.3s ease-in-out",
+          top: 0,
+          py: 1,
+        }}
+      >
+        <Toolbar sx={{ maxWidth: "lg", width: "100%", mx: "auto", display: "flex", justifyContent: "space-between" }}>
+          {/* Logo */}
+          <Box
+            component={Link}
+            to="/"
+            onClick={() => {
+              setActive("");
+              window.scrollTo(0, 0);
+            }}
+            sx={{ display: "flex", alignItems: "center", gap: 2, textDecoration: "none" }}
+          >
+            <img
+              src="https://res.cloudinary.com/dfm6raue1/image/upload/v1750397101/20211229_221839__1_-removebg-preview_sayl4j.png"
+              alt="logo"
+              style={{ width: 44, height: 44, objectFit: "contain" }}
+            />
+            <Typography variant="h6" sx={{ color: "white", fontWeight: "bold", display: { xs: "none", sm: "block" } }}>
+              Jesus Youth <Box component="span" sx={{ display: { xs: "none", md: "inline" } }}>&nbsp;Chengaloor</Box>
+            </Typography>
+          </Box>
+
+          {/* Desktop Menu */}
+          <Box sx={{ display: { xs: "none", md: "block" } }}>{navContent}</Box>
+
+          {/* Mobile Menu Icon */}
+          <Box sx={{ display: { xs: "block", md: "none" } }}>
+            <IconButton color="inherit" aria-label="open drawer" edge="end" onClick={handleDrawerToggle}>
+              <MenuIcon fontSize="large" />
+            </IconButton>
+          </Box>
+        </Toolbar>
+      </AppBar>
+
+      {/* Mobile Drawer */}
+      <Drawer
+        anchor="right"
+        open={mobileOpen}
+        onClose={handleDrawerToggle}
+        ModalProps={{ keepMounted: true }} 
+        sx={{
+          display: { xs: "block", md: "none" },
+          "& .MuiDrawer-paper": { boxSizing: "border-box", width: 250 },
+        }}
+      >
+        {drawerContent}
+      </Drawer>
+    </>
   );
 };
 

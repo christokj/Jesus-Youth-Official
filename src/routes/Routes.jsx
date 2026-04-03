@@ -8,7 +8,7 @@ import AdminHomepage from "../pages/Admin/AdminHomepage";
 import SuccessPage from "../pages/User/SuccessPage";
 import AdminLoginPage from "../pages/Admin/AdminLoginPage";
 import ContactPage from "../pages/User/ContactPage";
-
+import AdminSignupPage from "../pages/Admin/AdminSignupPage";
 
 export const router = createBrowserRouter([
     {
@@ -43,6 +43,10 @@ export const router = createBrowserRouter([
             {
                 path: "contact-page",
                 element: <ContactPage />
+            },
+            {
+                path: "admin-signup",
+                element: <AdminSignupPage />
             }
         ],
     }

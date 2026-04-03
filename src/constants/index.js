@@ -39,8 +39,8 @@ import {
 import tekisky from "../assets/company/tekisky.png";
 
 
-export const navLinks = [
 
+export const navLinks = [
   {
     id: "home",
     title: "Home",
@@ -48,121 +48,112 @@ export const navLinks = [
   {
     id: "about",
     title: "About",
-
+  },
+  {
+    id: "pillars",
+    title: "The Six Pillars",
   },
   {
     id: "contact",
     title: "Contact",
   },
+  {
+    id: "register-page",
+    title: "Register for One Day Program",
+  },
 ];
 
 const services = [
   {
-    title: "Full-Stack Developer",
-    icon: web,
+    title: "Spirituality",
+    icon: web, // Using existing placeholders for now
   },
   {
-    title: "Frontend Developer",
+    title: "Formation",
     icon: mobile,
   },
   {
-    title: "Backend Developer",
+    title: "Mission",
     icon: backend,
   },
   {
-    title: "Ui UX Designer",
+    title: "Community",
     icon: creator,
   },
 ];
 
 const technologies = [
   {
-    name: "HTML 5",
+    name: "Prayer",
     icon: html,
   },
   {
-    name: "CSS 3",
+    name: "Word of God",
     icon: css,
   },
   {
-    name: "JavaScript",
+    name: "Sacraments",
     icon: javascript,
   },
   {
-    name: "React JS",
+    name: "Fellowship",
     icon: reactjs,
   },
   {
-    name: "gsap",
-    icon: gsap,
-  },
-  {
-    name: "framer",
-    icon: framer,
-  },
-
-
-  {
-    name: "Three JS",
-    icon: threejs,
-  },
-  {
-    name: "figma",
-    icon: figma,
-  },
-  {
-    name: "Redux Toolkit",
-    icon: redux,
-  },
-  {
-    name: "Tailwind CSS",
-    icon: tailwind,
-  },
-  {
-    name: "Material Ui",
-    icon: mui,
-  },
-  {
-    name: "Node JS",
+    name: "Evangelisation",
     icon: nodejs,
   },
   {
-    name: "Express Js",
-    icon: express,
-  },
-  {
-    name: "AWS",
-    icon: aws,
-  },
-  {
-    name: "MongoDB",
+    name: "Option for the Poor",
     icon: mongodb,
   },
+];
+
+const pillars = [
   {
-    name: "MySql",
-    icon: mysql,
+    title: "Prayer",
+    icon: "https://res.cloudinary.com/dfm6raue1/image/upload/v1750400000/prayer-icon_sayl4j.png", // Hypothetical icons or generic
+    description: "A personal, loving encounter with Jesus through daily prayer.",
   },
-
   {
-    name: "git",
-    icon: git,
+    title: "Word of God",
+    icon: "https://res.cloudinary.com/dfm6raue1/image/upload/v1750400000/bible-icon_sayl4j.png",
+    description: "Nourishing our souls with the Word of God every day.",
   },
-
-
+  {
+    title: "The Sacraments",
+    icon: "https://res.cloudinary.com/dfm6raue1/image/upload/v1750400000/sacrament-icon_sayl4j.png",
+    description: "Frequent participation in the Sacraments, especially the Eucharist.",
+  },
+  {
+    title: "Fellowship",
+    icon: "https://res.cloudinary.com/dfm6raue1/image/upload/v1750400000/fellowship-icon_sayl4j.png",
+    description: "Growing together in a community of like-minded friends.",
+  },
+  {
+    title: "Evangelisation",
+    icon: "https://res.cloudinary.com/dfm6raue1/image/upload/v1750400000/evangelise-icon_sayl4j.png",
+    description: "Sharing the Good News in today's diverse environments.",
+  },
+  {
+    title: "Option for the Poor",
+    icon: "https://res.cloudinary.com/dfm6raue1/image/upload/v1750400000/poor-icon_sayl4j.png",
+    description: "Carrying the mission of the Church to the peripheries.",
+  },
 ];
 
 const experiences = [
   {
-    title: "Full-Stack Developer",
-    company_name: "Tekisky",
-    icon: tekisky,
+    title: "International Presence",
+    company_name: "40+ Countries",
+    icon: gearXpert,
     iconBg: "#383E56",
-    date: "Jan 2023 - present",
+    date: "Established Globally",
     points: [
-      "Developing and maintaining web applications using MERN technologies.",
-      "Collaborating with cross-functional teams including designers, product managers, and other developers to create high-quality products.",
-      "Implementing responsive design and ensuring cross-browser compatibility.",
-      "Participating in code reviews and providing constructive feedback to other developers.",
+      "Present in over 40 countries across 5 continents.",
+      "Approved by the Holy See as an International Private Association of the Faithful.",
+      "Transforming lives through a joyful spirituality.",
+      "A community of young people, couples, and seniors.",
     ],
   },
 ];
@@ -170,103 +161,27 @@ const experiences = [
 const testimonials = [
   {
     testimonial:
-      "I thought it was impossible to make a website as beautiful as our product, but Huzaif proved me wrong.",
-    name: "MD Mustaqeem",
-    designation: "Ecommerce",
-    company: "QuickMart",
+      "Jesus Youth challenged me to live a meaningful and fulfilling life rooted in Christ.",
+    name: "John Doe",
+    designation: "Movement Member",
+    company: "Jesus Youth",
     image: firstTestimonial,
-  },
-  {
-    testimonial:
-      "I've never met a web developer who truly cares about their clients' success like Huzaif does.",
-    name: "Abdul Raheman",
-    designation: "Ecommerce Business",
-    company: "justbuyz",
-    image: secondTestimonial,
-  },
-  {
-    testimonial:
-      "After Huzaif optimized our website, our traffic increased by 50%. We can't thank them enough!",
-    name: "James Wang",
-    designation: "CTO",
-    company: "456 Enterprises",
-    image: thirdTestimonial,
   },
 ];
 
 const projects = [
   {
-    name: "Tekisky Mart",
-    description:
-      "Tekisky Mart is a web-based platform that allows users to search, explore, and purchase a wide range of products from various providers, offering a seamless and efficient shopping experience.",
+    name: "Spiritual Growth",
+    description: "A journey of personal and communal growth through the Six Pillars of Jesus Youth spirituality.",
     tags: [
-      {
-        name: "react",
-        color: "blue-text-gradient",
-      },
-      {
-        name: "tailwind",
-        color: "white-text-gradient",
-      },
-      {
-        name: "node",
-        color: "pink-text-gradient",
-      },
-      {
-        name: "mongodb",
-        color: "green-text-gradient",
-      },
-
+      { name: "Pillar 1", color: "blue-text-gradient" },
+      { name: "Pillar 2", color: "pink-text-gradient" },
+      { name: "Pillar 3", color: "green-text-gradient" },
     ],
     image: project2,
-    source_code_link: "https://github.com/",
-  },
-  {
-    name: "GearXpert",
-    description:
-      "GearXpert is your ultimate destination for premium auto parts and accessories, Whether you're an automobile enthusiast or a professional, find everything you need to upgrade, repair.",
-    tags: [
-      {
-        name: "react",
-        color: "blue-text-gradient",
-      },
-      {
-        name: "emailJs",
-        color: "green-text-gradient",
-      },
-      {
-        name: "Gsap",
-        color: "pink-text-gradient",
-      },
-    ],
-    image: gearXpert,
-    source_code_link: "https://github.com/",
-  },
-  {
-    name: "GoGroove-Ecommerce",
-    description:
-      "Go-Groove is your ultimate destination for premium products across various categories. Whether you're a savvy shopper or a professional, enhance, and simplify your lifestyle—all in one place!",
-    tags: [
-      {
-        name: "react",
-        color: "blue-text-gradient",
-      },
-      {
-        name: "express",
-        color: "white-text-gradient",
-      },
-      {
-        name: "node",
-        color: "green-text-gradient",
-      },
-      {
-        name: "mongodb",
-        color: "green-text-gradient",
-      },
-    ],
-    image: project3,
-    source_code_link: "https://github.com/",
+    source_code_link: "#",
   },
 ];
 
-export { services, technologies, experiences, testimonials, projects };
+export { services, technologies, experiences, testimonials, projects, pillars };
+
