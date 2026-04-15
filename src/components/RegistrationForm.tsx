@@ -1,4 +1,4 @@
-import { ChangeEvent, FormEvent, useEffect, useMemo, useRef, useState } from "react";
+import { ChangeEvent, FormEvent, WheelEvent, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import Reveal from "./Reveal";
@@ -120,6 +120,10 @@ function RegistrationForm({
 
   const ageNote = useMemo(() => "For this form, the accepted age is 50 or below.", []);
 
+  const preventNumberInputScroll = (event: WheelEvent<HTMLInputElement>) => {
+    event.currentTarget.blur();
+  };
+
   const handleChange = (event: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = event.target;
 
@@ -205,14 +209,14 @@ function RegistrationForm({
     } catch (error: unknown) {
       const message =
         typeof error === "object" &&
-        error !== null &&
-        "response" in error &&
-        typeof error.response === "object" &&
-        error.response !== null &&
-        "data" in error.response &&
-        typeof error.response.data === "object" &&
-        error.response.data !== null &&
-        "message" in error.response.data
+          error !== null &&
+          "response" in error &&
+          typeof error.response === "object" &&
+          error.response !== null &&
+          "data" in error.response &&
+          typeof error.response.data === "object" &&
+          error.response.data !== null &&
+          "message" in error.response.data
           ? String(error.response.data.message)
           : "Unable to load candidate details.";
       toast.error(message);
@@ -257,14 +261,14 @@ function RegistrationForm({
     } catch (error: unknown) {
       const message =
         typeof error === "object" &&
-        error !== null &&
-        "response" in error &&
-        typeof error.response === "object" &&
-        error.response !== null &&
-        "data" in error.response &&
-        typeof error.response.data === "object" &&
-        error.response.data !== null &&
-        "message" in error.response.data
+          error !== null &&
+          "response" in error &&
+          typeof error.response === "object" &&
+          error.response !== null &&
+          "data" in error.response &&
+          typeof error.response.data === "object" &&
+          error.response.data !== null &&
+          "message" in error.response.data
           ? String(error.response.data.message)
           : "Unable to submit the registration right now.";
       toast.error(message);
@@ -278,7 +282,7 @@ function RegistrationForm({
       <Reveal className="page-header page-header--centered">
         <span className="eyebrow">{eyebrow}</span>
         <h1>{title}</h1>
-        {description && <p>{description}</p>}
+        {/* {description && <p>{description}</p>} */}
       </Reveal>
 
       <Reveal delay={120}>
@@ -324,7 +328,16 @@ function RegistrationForm({
 
             <label className="field">
               <span>Age</span>
-              <input name="age" type="number" value={formData.age} onChange={handleChange} placeholder="Enter age" />
+              <input
+                name="age"
+                type="number"
+                value={formData.age}
+                onChange={handleChange}
+                onWheel={preventNumberInputScroll}
+                min={1}
+                max={50}
+                placeholder="Enter age"
+              />
               {errors.age ? <small>{errors.age}</small> : <em>{ageNote}</em>}
             </label>
 

@@ -7,7 +7,7 @@ const navItems = [
   { label: "Home", to: "/" },
   { label: "Register", to: "/register-page" },
   { label: "Contact", to: "/contact-page" },
-  { label: "Admin", to: "/admin-login" },
+  // { label: "Admin", to: "/admin-login" },
 ];
 
 function SiteHeader() {

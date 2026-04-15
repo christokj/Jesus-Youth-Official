@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { AxiosError } from "axios";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import { FaCalendarDays, FaPhone, FaUserCheck, FaUsers, FaWhatsapp } from "react-icons/fa6";
@@ -57,6 +58,18 @@ const formatTimeRemaining = (milliseconds: number) => {
   return `${hours}:${minutes}:${seconds}`;
 };
 
+const getApiErrorMessage = (error: unknown, fallbackMessage: string) => {
+  if (error instanceof AxiosError) {
+    return (
+      (typeof error.response?.data?.message === "string" && error.response.data.message) ||
+      error.message ||
+      fallbackMessage
+    );
+  }
+
+  return fallbackMessage;
+};
+
 function AdminHomepage() {
   const candidatesPerPage = 8;
   const navigate = useNavigate();
@@ -76,6 +89,13 @@ function AdminHomepage() {
   const [selectedStudentId, setSelectedStudentId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [sessionTimeRemaining, setSessionTimeRemaining] = useState(adminSessionDurationMs);
+
+  const handleUnauthorized = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("adminSessionExpiresAt");
+    toast.error("Admin session expired. Please login again.");
+    navigate("/admin-login");
+  };
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -153,8 +173,13 @@ function AdminHomepage() {
       const response = await axiosInstance.get<Student[]>("/admin/get-data", { params: { year } });
       setStudents(response.data);
       setSelectedStudentId((current) => current ?? response.data[0]?._id ?? null);
-    } catch {
-      toast.error("Failed to fetch candidates.");
+    } catch (error: unknown) {
+      if (error instanceof AxiosError && error.response?.status === 401) {
+        handleUnauthorized();
+        return;
+      }
+
+      toast.error(getApiErrorMessage(error, "Failed to fetch candidates."));
     }
   };
 
@@ -162,8 +187,13 @@ function AdminHomepage() {
     try {
       const response = await axiosInstance.get<Admin[]>("/admin/get-admins");
       setAdmins(response.data);
-    } catch {
-      toast.error("Failed to fetch admins.");
+    } catch (error: unknown) {
+      if (error instanceof AxiosError && error.response?.status === 401) {
+        handleUnauthorized();
+        return;
+      }
+
+      toast.error(getApiErrorMessage(error, "Failed to fetch admins."));
     }
   };
 
