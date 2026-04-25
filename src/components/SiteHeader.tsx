@@ -34,7 +34,7 @@ function SiteHeader() {
             <img src={logo} alt="Jesus Youth Chengaloor logo" className="brand__logo" />
             <div>
               <span className="brand__title">Jesus Youth Chengaloor</span>
-              <span className="brand__subtitle">Rooted in Christ, walking in His light</span>
+              <span className="brand__subtitle">A MISSIONARY MOVEMENT AT THE SERVICE OF THE CHURCH</span>
             </div>
           </Link>
 

@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { FaFacebookF, FaInstagram, FaWhatsapp } from "react-icons/fa6";
+import { FaFacebookF, FaInstagram, FaTelegram, FaWhatsapp, FaYoutube } from "react-icons/fa6";
 
 const socialLinks = [
   {
@@ -14,8 +14,18 @@ const socialLinks = [
   },
   {
     label: "WhatsApp",
-    href: "https://wa.me/916282130289",
+    href: "https://wa.me/918089677724",
     icon: <FaWhatsapp />,
+  },
+  {
+    label: "YouTube",
+    href: "https://youtube.com/@jesusyouthchengaloor?si=2P2ZQjNCUmq-eX0J",
+    icon: <FaYoutube />,
+  },
+  {
+    label: "Telegram",
+    href: "https://t.me/CHENGALOORJY",
+    icon: <FaTelegram />,
   },
 ];
 
@@ -59,7 +69,7 @@ function SiteFooter() {
             ))}
           </div>
           <p className="site-footer__text">Email: jychengaloor@gmail.com</p>
-          <p className="site-footer__text">Phone: +91 62821 30289</p>
+          <p className="site-footer__text">Phone: +91 80896 77724</p>
           <p className="site-footer__text">“Let all that you do be done in love.” 1 Corinthians 16:14</p>
         </div>
       </div>

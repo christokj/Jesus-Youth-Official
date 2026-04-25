@@ -1,6 +1,7 @@
 import { Outlet, useLocation } from "react-router-dom";
 import SiteHeader from "../components/SiteHeader";
 import SiteFooter from "../components/SiteFooter";
+import RainParticles from "../components/RainParticles";
 import ScrollToTop from "../components/ui/ScrollToTop";
 
 export function RootLayout() {
@@ -14,6 +15,7 @@ export function RootLayout() {
         <div className="site-background-orb site-background-orb--one" />
         <div className="site-background-orb site-background-orb--two" />
         <div className="site-background-grid" />
+        <RainParticles />
         <SiteHeader />
         <main className="site-main">
           <Outlet />

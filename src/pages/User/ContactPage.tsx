@@ -1,5 +1,5 @@
 import Reveal from "../../components/Reveal";
-import { FaEnvelope, FaFacebookF, FaInstagram, FaLocationDot, FaPhone, FaWhatsapp } from "react-icons/fa6";
+import { FaEnvelope, FaFacebookF, FaInstagram, FaLocationDot, FaPhone, FaTelegram, FaWhatsapp, FaYoutube } from "react-icons/fa6";
 
 const connectItems = [
   {
@@ -16,9 +16,21 @@ const connectItems = [
   },
   {
     title: "WhatsApp",
-    value: "+91 62821 30289",
-    href: "https://wa.me/916282130289",
+    value: "+91 80896 77724",
+    href: "https://wa.me/918089677724",
     icon: <FaWhatsapp />,
+  },
+  {
+    title: "YouTube",
+    value: "@jesusyouthchengaloor",
+    href: "https://youtube.com/@jesusyouthchengaloor?si=2P2ZQjNCUmq-eX0J",
+    icon: <FaYoutube />,
+  },
+  {
+    title: "Telegram",
+    value: "@CHENGALOORJY",
+    href: "https://t.me/CHENGALOORJY",
+    icon: <FaTelegram />,
   },
 ];
 
@@ -39,11 +51,11 @@ function ContactPage() {
           <article className="glass-panel contact-card">
             <h2>Prayerful contact</h2>
             <div className="contact-list">
-              <a href="tel:+916282130289" className="contact-row">
+              <a href="tel:+918089677724" className="contact-row">
                 <FaPhone />
                 <div>
                   <strong>Phone</strong>
-                  <span>+91 62821 30289</span>
+                  <span>+91 80896 77724</span>
                 </div>
               </a>
               <a href="mailto:jychengaloor@gmail.com" className="contact-row">

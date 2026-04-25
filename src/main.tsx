@@ -12,7 +12,7 @@ if (!root) {
 }
 
 createRoot(root).render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
+  // <React.StrictMode>
+  <App />
+  // </React.StrictMode>,
 );

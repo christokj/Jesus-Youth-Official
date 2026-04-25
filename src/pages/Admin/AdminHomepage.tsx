@@ -21,6 +21,7 @@ interface Student {
   dob: string;
   parish: string;
   gender: string;
+  prayerRequest?: string;
   paid?: boolean;
   visited?: boolean;
   createdAt?: string;
@@ -209,7 +210,7 @@ function AdminHomepage() {
 
   const filteredStudents = useMemo(() => {
     const base = students.filter((student) => {
-      const haystack = [student.name, student.unit, student.place, student.parish, student.mobile, student.address, student.gender]
+      const haystack = [student.name, student.unit, student.place, student.parish, student.mobile, student.address, student.gender, student.prayerRequest]
         .join(" ")
         .toLowerCase();
 
@@ -326,15 +327,15 @@ function AdminHomepage() {
     doc.text("Jesus Youth Chengaloor Registrations", 14, 20);
     autoTable(doc, {
       startY: 28,
-      head: [["Name", "Unit", "Mobile", "Place", "Parish", "Gender", "Paid", "Visited"]],
-      body: filteredStudents.map((student) => [student.name, student.unit, String(student.mobile), student.place, student.parish, student.gender || "Not set", student.paid ? "Yes" : "No", student.visited ? "Yes" : "No"]),
+      head: [["Name", "Unit", "Mobile", "Place", "Parish", "Gender", "Prayer Request", "Paid", "Visited"]],
+      body: filteredStudents.map((student) => [student.name, student.unit, String(student.mobile), student.place, student.parish, student.gender || "Not set", student.prayerRequest || "-", student.paid ? "Yes" : "No", student.visited ? "Yes" : "No"]),
     });
     doc.save("jesus-youth-registrations.pdf");
   };
 
   const downloadCsv = () => {
-    const headers = ["Name", "Age", "Unit", "Mobile", "Place", "Parish", "Gender", "Marital Status", "Paid", "Visited"];
-    const rows = filteredStudents.map((student) => [student.name, student.age, student.unit, student.mobile, student.place, student.parish, student.gender, student.maritalStatus, student.paid ? "Yes" : "No", student.visited ? "Yes" : "No"]);
+    const headers = ["Name", "Age", "Unit", "Mobile", "Place", "Parish", "Gender", "Marital Status", "Prayer Request", "Paid", "Visited"];
+    const rows = filteredStudents.map((student) => [student.name, student.age, student.unit, student.mobile, student.place, student.parish, student.gender, student.maritalStatus, student.prayerRequest || "", student.paid ? "Yes" : "No", student.visited ? "Yes" : "No"]);
     const csv = [headers, ...rows].map((row) => row.map((value) => `"${String(value ?? "").replace(/"/g, '""')}"`).join(",")).join("\n");
     const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
@@ -457,7 +458,7 @@ function AdminHomepage() {
           </label>
           <label className="field field--compact">
             <span>Search</span>
-            <input value={searchTerm} onChange={(event) => setSearchTerm(event.target.value)} placeholder={activeTab === "students" ? "Search name, unit, place, parish, mobile" : "Search admin records"} />
+            <input value={searchTerm} onChange={(event) => setSearchTerm(event.target.value)} placeholder={activeTab === "students" ? "Search name, unit, place, parish, mobile, prayer request" : "Search admin records"} />
           </label>
         </div>
 
@@ -567,6 +568,7 @@ function AdminHomepage() {
                           <option value="">Select gender</option><option value="Male">Male</option><option value="Female">Female</option><option value="Other">Other</option>
                         </select>
                       </div>
+                      <div className="dashboard-detail__full"><strong>Prayer request</strong><span>{selectedStudent.prayerRequest?.trim() || "None shared"}</span></div>
                     </div>
 
                     <div className="dashboard-detail__actions">

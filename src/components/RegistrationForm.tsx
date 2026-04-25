@@ -37,6 +37,8 @@ const unitOptions = [
   "Other",
 ];
 
+const parishOptions = ["Chengaloor", "Other"] as const;
+
 interface RegistrationFormData {
   name: string;
   age: string;
@@ -47,7 +49,9 @@ interface RegistrationFormData {
   maritalStatus: string;
   dob: string;
   parish: string;
+  parishOther: string;
   gender: string;
+  prayerRequest: string;
 }
 
 type FormErrors = Partial<Record<keyof RegistrationFormData, string>>;
@@ -72,6 +76,7 @@ interface CandidateDetails {
   dob: string;
   parish: string;
   gender: string;
+  prayerRequest?: string;
 }
 
 interface RegistrationFormProps {
@@ -94,7 +99,9 @@ const initialForm: RegistrationFormData = {
   maritalStatus: "",
   dob: "",
   parish: "",
+  parishOther: "",
   gender: "",
+  prayerRequest: "",
 };
 
 const registrationYear = 2026;
@@ -119,6 +126,21 @@ function RegistrationForm({
   const activeRequestRef = useRef(0);
 
   const ageNote = useMemo(() => "For this form, the accepted age is 50 or below.", []);
+  const isOtherParishSelected = formData.parish === "Other";
+
+  const getParishFormState = (parish: string) => {
+    if (parishOptions.includes(parish as (typeof parishOptions)[number])) {
+      return {
+        parish,
+        parishOther: "",
+      };
+    }
+
+    return {
+      parish: "Other",
+      parishOther: parish,
+    };
+  };
 
   const preventNumberInputScroll = (event: WheelEvent<HTMLInputElement>) => {
     event.currentTarget.blur();
@@ -129,6 +151,16 @@ function RegistrationForm({
 
     if (name === "name" && enablePreviousYearLookup) {
       setShowCandidateDropdown(true);
+    }
+
+    if (name === "parish") {
+      setFormData((current) => ({
+        ...current,
+        parish: value,
+        parishOther: value === "Other" ? current.parishOther : "",
+      }));
+      setErrors((current) => ({ ...current, parish: undefined, parishOther: undefined }));
+      return;
     }
 
     setFormData((current) => ({ ...current, [name]: value }));
@@ -189,6 +221,7 @@ function RegistrationForm({
     try {
       const response = await axiosInstance.get<CandidateDetails>(`/user/previous-year/${candidateId}`);
       const candidate = response.data;
+      const parishState = getParishFormState(candidate.parish || "");
 
       setFormData({
         name: candidate.name || "",
@@ -199,8 +232,10 @@ function RegistrationForm({
         place: candidate.place || "",
         maritalStatus: candidate.maritalStatus || "",
         dob: candidate.dob || "",
-        parish: candidate.parish || "",
+        parish: parishState.parish,
+        parishOther: parishState.parishOther,
         gender: candidate.gender || "",
+        prayerRequest: candidate.prayerRequest || "",
       });
       setErrors({});
       setCandidateMatches([]);
@@ -237,6 +272,7 @@ function RegistrationForm({
     if (!formData.unit) nextErrors.unit = "Please choose a unit.";
     if (!formData.maritalStatus) nextErrors.maritalStatus = "Please choose marital status.";
     if (!formData.parish) nextErrors.parish = "Please choose a parish.";
+    if (formData.parish === "Other" && !formData.parishOther.trim()) nextErrors.parishOther = "Please enter your parish name.";
     if (!formData.gender) nextErrors.gender = "Please choose a gender.";
     if (!formData.dob) nextErrors.dob = "Date of birth is required.";
     if (!Number.isFinite(age) || age < 1 || age > 50) nextErrors.age = "Age must be between 1 and 50.";
@@ -254,6 +290,7 @@ function RegistrationForm({
       await axiosInstance.post("/user/register", {
         ...formData,
         age: Number(formData.age),
+        parish: formData.parish === "Other" ? formData.parishOther.trim() : formData.parish,
         programYear: registrationYear,
       });
       toast.success(successMessage);
@@ -394,11 +431,27 @@ function RegistrationForm({
               <span>Parish</span>
               <select name="parish" value={formData.parish} onChange={handleChange}>
                 <option value="">Select parish</option>
-                <option value="Chengaloor">Chengaloor</option>
-                <option value="Other">Other</option>
+                {parishOptions.map((option) => (
+                  <option key={option} value={option}>
+                    {option}
+                  </option>
+                ))}
               </select>
               {errors.parish && <small>{errors.parish}</small>}
             </label>
+
+            {isOtherParishSelected ? (
+              <label className="field">
+                <span>Type your parish</span>
+                <input
+                  name="parishOther"
+                  value={formData.parishOther}
+                  onChange={handleChange}
+                  placeholder="Enter your parish name"
+                />
+                {errors.parishOther && <small>{errors.parishOther}</small>}
+              </label>
+            ) : null}
 
             <label className="field">
               <span>Gender</span>
@@ -421,6 +474,17 @@ function RegistrationForm({
                 placeholder="Enter your address"
               />
               {errors.address && <small>{errors.address}</small>}
+            </label>
+
+            <label className="field field--full">
+              <span>Prayer request (optional)</span>
+              <textarea
+                name="prayerRequest"
+                value={formData.prayerRequest}
+                onChange={handleChange}
+                rows={4}
+                placeholder="Share any prayer intention you'd like us to remember."
+              />
             </label>
           </div>
 

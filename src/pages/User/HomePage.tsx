@@ -52,51 +52,73 @@ function HomePage() {
     <div className="page-stack">
       <section className="hero shell">
         <div className="hero__layout">
-          <Reveal className="hero__content">
-            <span className="eyebrow">Jesus Youth Chengaloor</span>
-            <h1 className="hero__title">Come to the Lord with joy, grow in His Word, and walk together in His love.</h1>
-            <p className="hero__text">
-              Jesus Youth Chengaloor is a place of worship, prayer, fellowship, and mission where young
-              hearts are invited to seek first the Kingdom of God, remain rooted in Christ, and be filled
-              with the peace that surpasses all understanding.
-            </p>
-            <div className="hero__actions">
+          <div className="hero__content hero__content--image glass-panel">
+            <div className="hero__banner-shell">
+              <img
+                src="/assets/rooted_in_christ_banner.jpeg"
+                alt="Rooted in Christ banner for Jesus Youth Chengaloor"
+                className="hero__banner"
+              />
+
+            </div>
+            <div className="hero__actions hero__actions--mobile-join">
               <Link to="/register-page" className="button button--primary">
                 Join the Gathering
               </Link>
-              <Link to="/contact-page" className="button button--secondary">
-                Reach the Prayer Team
-              </Link>
             </div>
-            <div className="hero__metrics">
-              {metrics.map((item) => (
-                <div key={item.label} className="metric glass-panel">
-                  <strong>{item.value}</strong>
-                  <span>{item.label}</span>
-                </div>
-              ))}
-            </div>
-          </Reveal>
+          </div>
 
           <Reveal className="hero__visual" delay={150}>
-            <div className="hero-card glass-panel">
-              <div className="hero-card__glow" />
-              <p className="hero-card__label">Theme verse</p>
-              <h2>“Be still, and know that I am God.”</h2>
-              <p className="hero-card__verse">Psalm 46:10</p>
-              <div className="hero-card__details">
-                <div>
-                  <span>Gathering theme</span>
-                  <strong>Rooted in Christ, bearing fruit in love</strong>
+            <div className="hero__visual-stack">
+              <div className="hero-card glass-panel">
+                <div className="hero-card__glow" />
+                <p className="hero-card__label">Theme verse</p>
+                <h2>“Be still, and know that I am God.”</h2>
+                <p className="hero-card__verse">Psalm 46:10</p>
+                {/* <p className="hero-card__reflection">
+                  In a noisy and hurried world, this invitation leads us back to the heart of discipleship:
+                  to pause, surrender, listen, and recognize that God is still present, faithful, and at work.
+                </p> */}
+                <div className="hero-card__details">
+                  <div>
+                    <span>Gathering theme</span>
+                    <strong>Rooted in Christ, bearing fruit in love</strong>
+                  </div>
+                  <div>
+                    <span>Word for the journey</span>
+                    <strong>“Your word is a lamp to my feet.” Psalm 119:105</strong>
+                  </div>
+                  <div>
+                    <span>Prayer focus</span>
+                    <strong>Quiet hearts, open ears, and lives ready to say yes to Jesus</strong>
+                  </div>
                 </div>
-                <div>
-                  <span>Word for the journey</span>
-                  <strong>“Your word is a lamp to my feet.” Psalm 119:105</strong>
+                <div className="hero-card__badge">
+                  <FaCalendarDays />
+                  <span>“The Lord is my shepherd; I shall not want.” Psalm 23:1</span>
                 </div>
-              </div>
-              <div className="hero-card__badge">
-                <FaCalendarDays />
-                <span>“The Lord is my shepherd; I shall not want.” Psalm 23:1</span>
+                <div className="hero__actions hero-card__actions">
+                  <Link to="/register-page" className="button button--primary hero-card__join-desktop">
+                    Join the Gathering
+                  </Link>
+                  <Link to="/contact-page" className="button button--secondary">
+                    Reach the Prayer Team
+                  </Link>
+                </div>
+                <div className="hero-card__footer">
+                  <div>
+                    <span>Atmosphere</span>
+                    <strong>Prayer, reverence, and joyful fellowship</strong>
+                  </div>
+                  <div>
+                    <span>Invitation</span>
+                    <strong>Come with expectancy and leave with hope</strong>
+                  </div>
+                  <div>
+                    <span>Hope for the day</span>
+                    <strong>That every participant may encounter Christ personally and return strengthened for mission</strong>
+                  </div>
+                </div>
               </div>
             </div>
           </Reveal>
