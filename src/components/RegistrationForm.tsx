@@ -127,6 +127,12 @@ function RegistrationForm({
 
   const ageNote = useMemo(() => "For this form, the accepted age is 50 or below.", []);
   const isOtherParishSelected = formData.parish === "Other";
+  const [mainTitle, titleAccent] = useMemo(() => {
+    const [head, ...rest] = title.split(",");
+    const accent = rest.join(",").trim();
+
+    return [head.trim(), accent];
+  }, [title]);
 
   const getParishFormState = (parish: string) => {
     if (parishOptions.includes(parish as (typeof parishOptions)[number])) {
@@ -318,7 +324,10 @@ function RegistrationForm({
     <section className="section shell section--tight">
       <Reveal className="page-header page-header--centered">
         <span className="eyebrow">{eyebrow}</span>
-        <h1>{title}</h1>
+        <h1 className={titleAccent ? "page-header__title-lockup" : undefined}>
+          <span className={titleAccent ? "page-header__title-main" : undefined}>{mainTitle}</span>
+          {titleAccent ? <small className="page-header__title-accent">{titleAccent}</small> : null}
+        </h1>
         {/* {description && <p>{description}</p>} */}
       </Reveal>
 

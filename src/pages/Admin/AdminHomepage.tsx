@@ -3,7 +3,17 @@ import { useNavigate } from "react-router-dom";
 import { AxiosError } from "axios";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
-import { FaCalendarDays, FaPhone, FaUserCheck, FaUsers, FaWhatsapp } from "react-icons/fa6";
+import {
+  FaCalendarCheck,
+  FaCalendarDays,
+  FaCopy,
+  FaHandHoldingDollar,
+  FaPhone,
+  FaSpinner,
+  FaUserCheck,
+  FaUsers,
+  FaWhatsapp,
+} from "react-icons/fa6";
 import { toast } from "sonner";
 import Reveal from "../../components/Reveal";
 import { axiosInstance } from "../../config/axiosInstance";
@@ -38,7 +48,16 @@ type TabKey = "students" | "admins";
 type FilterValue = "all" | "paid" | "unpaid" | "visited" | "not-visited";
 type SortValue = "recent" | "name" | "age-high" | "age-low";
 
+interface DeletedStudentBackup {
+  backupId: string;
+  deletedAt: number;
+  expiresAt: number;
+  student: Student;
+}
+
 const adminSessionDurationMs = 3 * 60 * 60 * 1000;
+const deletedStudentsStorageKey = "adminDeletedStudentsBackup";
+const deleteRecoveryWindowMs = 10 * 60 * 1000;
 
 const getStoredExpiryTime = () => {
   const rawValue = localStorage.getItem("adminSessionExpiresAt");
@@ -57,6 +76,34 @@ const formatTimeRemaining = (milliseconds: number) => {
   const minutes = String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, "0");
   const seconds = String(totalSeconds % 60).padStart(2, "0");
   return `${hours}:${minutes}:${seconds}`;
+};
+
+const formatRecoveryTimeRemaining = (milliseconds: number) => {
+  const totalSeconds = Math.max(0, Math.floor(milliseconds / 1000));
+  const minutes = String(Math.floor(totalSeconds / 60)).padStart(2, "0");
+  const seconds = String(totalSeconds % 60).padStart(2, "0");
+  return `${minutes}:${seconds}`;
+};
+
+const readDeletedStudentBackups = () => {
+  const rawValue = localStorage.getItem(deletedStudentsStorageKey);
+
+  if (!rawValue) {
+    return [] as DeletedStudentBackup[];
+  }
+
+  try {
+    const parsedValue = JSON.parse(rawValue) as DeletedStudentBackup[];
+    const currentTime = Date.now();
+
+    return parsedValue.filter((item) => item.expiresAt > currentTime);
+  } catch {
+    return [] as DeletedStudentBackup[];
+  }
+};
+
+const writeDeletedStudentBackups = (backups: DeletedStudentBackup[]) => {
+  localStorage.setItem(deletedStudentsStorageKey, JSON.stringify(backups));
 };
 
 const getApiErrorMessage = (error: unknown, fallbackMessage: string) => {
@@ -90,6 +137,13 @@ function AdminHomepage() {
   const [selectedStudentId, setSelectedStudentId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [sessionTimeRemaining, setSessionTimeRemaining] = useState(adminSessionDurationMs);
+  const [deletingStudentId, setDeletingStudentId] = useState<string | null>(null);
+  const [deletingAdminId, setDeletingAdminId] = useState<string | null>(null);
+  const [updatingPaidId, setUpdatingPaidId] = useState<string | null>(null);
+  const [updatingVisitedId, setUpdatingVisitedId] = useState<string | null>(null);
+  const [deletedStudentBackups, setDeletedStudentBackups] = useState<DeletedStudentBackup[]>([]);
+  const [recoveryNow, setRecoveryNow] = useState(Date.now());
+  const [restoringBackupId, setRestoringBackupId] = useState<string | null>(null);
 
   const handleUnauthorized = () => {
     localStorage.removeItem("token");
@@ -125,6 +179,7 @@ function AdminHomepage() {
     }
 
     setSessionTimeRemaining(remainingTime);
+    setDeletedStudentBackups(readDeletedStudentBackups());
 
     void Promise.all([fetchStudents(2026), fetchAdmins()]).finally(() => setLoading(false));
   }, [navigate]);
@@ -169,18 +224,33 @@ function AdminHomepage() {
     };
   }, [navigate]);
 
+  useEffect(() => {
+    const intervalId = window.setInterval(() => {
+      const nextValue = readDeletedStudentBackups();
+      setDeletedStudentBackups(nextValue);
+      setRecoveryNow(Date.now());
+      writeDeletedStudentBackups(nextValue);
+    }, 1000);
+
+    return () => {
+      window.clearInterval(intervalId);
+    };
+  }, []);
+
   const fetchStudents = async (year = selectedYear) => {
     try {
       const response = await axiosInstance.get<Student[]>("/admin/get-data", { params: { year } });
       setStudents(response.data);
       setSelectedStudentId((current) => current ?? response.data[0]?._id ?? null);
+      return response.data;
     } catch (error: unknown) {
       if (error instanceof AxiosError && error.response?.status === 401) {
         handleUnauthorized();
-        return;
+        return [] as Student[];
       }
 
       toast.error(getApiErrorMessage(error, "Failed to fetch candidates."));
+      return [] as Student[];
     }
   };
 
@@ -293,22 +363,30 @@ function AdminHomepage() {
   };
 
   const handlePaidToggle = async (id: string, paid: boolean) => {
+    setUpdatingPaidId(id);
+
     try {
       await axiosInstance.post("/admin/update-paid", { id, paid });
       updateStudentState(id, { paid });
       toast.success(`Marked as ${paid ? "paid" : "unpaid"}.`);
     } catch {
       toast.error("Unable to update paid status.");
+    } finally {
+      setUpdatingPaidId(null);
     }
   };
 
   const handleVisitedToggle = async (id: string, visited: boolean) => {
+    setUpdatingVisitedId(id);
+
     try {
       await axiosInstance.post("/admin/update-visited", { id, visited });
       updateStudentState(id, { visited });
       toast.success(`Marked as ${visited ? "visited" : "not visited"}.`);
     } catch {
       toast.error("Unable to update visited status.");
+    } finally {
+      setUpdatingVisitedId(null);
     }
   };
 
@@ -319,6 +397,124 @@ function AdminHomepage() {
       toast.success("Gender updated.");
     } catch {
       toast.error("Unable to update gender.");
+    }
+  };
+
+  const handleDeleteStudent = async (student: Student) => {
+    const confirmed = window.confirm(`Delete candidate "${student.name}" from ${selectedYear} registrations?`);
+    if (!confirmed) return;
+
+    const finalConfirmed = window.confirm(`This will remove "${student.name}" now. Do you want to continue?`);
+    if (!finalConfirmed) return;
+
+    setDeletingStudentId(student._id);
+
+    try {
+      await axiosInstance.delete(`/admin/delete-student/${student._id}`);
+      const backupEntry: DeletedStudentBackup = {
+        backupId: `${student._id}-${Date.now()}`,
+        deletedAt: Date.now(),
+        expiresAt: Date.now() + deleteRecoveryWindowMs,
+        student,
+      };
+      const nextBackups = [backupEntry, ...readDeletedStudentBackups()].slice(0, 12);
+      writeDeletedStudentBackups(nextBackups);
+      setDeletedStudentBackups(nextBackups);
+      setRecoveryNow(Date.now());
+      setStudents((current) => current.filter((item) => item._id !== student._id));
+      setSelectedStudentId((current) => (current === student._id ? null : current));
+      toast.success("Candidate deleted. You can recover it for a short time.");
+    } catch (error: unknown) {
+      if (error instanceof AxiosError && error.response?.status === 401) {
+        handleUnauthorized();
+        return;
+      }
+
+      toast.error(getApiErrorMessage(error, "Unable to delete candidate."));
+    } finally {
+      setDeletingStudentId(null);
+    }
+  };
+
+  const handleDeleteAdmin = async (admin: Admin) => {
+    const confirmed = window.confirm(`Delete admin "${admin.username}"?`);
+    if (!confirmed) return;
+
+    const finalConfirmed = window.confirm(`This will permanently remove admin "${admin.username}". Do you want to continue?`);
+    if (!finalConfirmed) return;
+
+    setDeletingAdminId(admin._id);
+
+    try {
+      await axiosInstance.delete(`/admin/delete-admin/${admin._id}`);
+      setAdmins((current) => current.filter((item) => item._id !== admin._id));
+      toast.success("Admin deleted successfully.");
+    } catch (error: unknown) {
+      if (error instanceof AxiosError && error.response?.status === 401) {
+        handleUnauthorized();
+        return;
+      }
+
+      toast.error(getApiErrorMessage(error, "Unable to delete admin."));
+    } finally {
+      setDeletingAdminId(null);
+    }
+  };
+
+  const handleRestoreStudent = async (backup: DeletedStudentBackup) => {
+    setRestoringBackupId(backup.backupId);
+
+    try {
+      const { student } = backup;
+      await axiosInstance.post("/user/register", {
+        name: student.name,
+        age: Number(student.age),
+        unit: student.unit,
+        address: student.address,
+        mobile: student.mobile,
+        place: student.place,
+        maritalStatus: student.maritalStatus,
+        dob: student.dob,
+        parish: student.parish,
+        gender: student.gender,
+        prayerRequest: student.prayerRequest || "",
+        programYear: student.programYear ?? selectedYear,
+      });
+
+      const refreshedStudents = await fetchStudents((student.programYear as 2025 | 2026 | undefined) ?? selectedYear);
+      const restoredCandidate = [...refreshedStudents]
+        .reverse()
+        .find(
+          (item) =>
+            item.name === student.name &&
+            String(item.mobile) === String(student.mobile) &&
+            item.dob === student.dob &&
+            item.programYear === (student.programYear ?? selectedYear),
+        );
+
+      if (student.paid && restoredCandidate?._id) {
+        await axiosInstance.post("/admin/update-paid", { id: restoredCandidate._id, paid: true });
+      }
+
+      if (student.visited && restoredCandidate?._id) {
+        await axiosInstance.post("/admin/update-visited", { id: restoredCandidate._id, visited: true });
+      }
+
+      const nextBackups = readDeletedStudentBackups().filter((item) => item.backupId !== backup.backupId);
+      writeDeletedStudentBackups(nextBackups);
+      setDeletedStudentBackups(nextBackups);
+      setRecoveryNow(Date.now());
+      await fetchStudents(selectedYear);
+      toast.success("Candidate restored successfully.");
+    } catch (error: unknown) {
+      if (error instanceof AxiosError && error.response?.status === 401) {
+        handleUnauthorized();
+        return;
+      }
+
+      toast.error(getApiErrorMessage(error, "Unable to restore candidate."));
+    } finally {
+      setRestoringBackupId(null);
     }
   };
 
@@ -443,6 +639,46 @@ function AdminHomepage() {
         </Reveal>
       </div>
 
+      {deletedStudentBackups.length > 0 ? (
+        <Reveal className="glass-panel dashboard-summary" delay={140}>
+          <div className="dashboard-summary__header">
+            <h2>Recently deleted candidates</h2>
+            <span>Recovery available for {Math.floor(deleteRecoveryWindowMs / 60000)} minutes only</span>
+          </div>
+          <div className="dashboard-list">
+            {deletedStudentBackups.map((backup) => (
+              <article key={backup.backupId} className="dashboard-item">
+                <div className="dashboard-item__content">
+                  <div>
+                    <h3>{backup.student.name}</h3>
+                    <p>
+                      {(backup.student.programYear ?? "Unknown year")} • {backup.student.unit} • {backup.student.place}
+                    </p>
+                  </div>
+                  <span className="status-badge">
+                    Recover in {formatRecoveryTimeRemaining(backup.expiresAt - recoveryNow)}
+                  </span>
+                </div>
+                <div className="dashboard-item__meta">
+                  <span>Mobile: {backup.student.mobile}</span>
+                  <span>Parish: {backup.student.parish}</span>
+                </div>
+                <div className="dashboard-item__actions">
+                  <button
+                    type="button"
+                    className="button button--primary"
+                    onClick={() => handleRestoreStudent(backup)}
+                    disabled={restoringBackupId === backup.backupId}
+                  >
+                    {restoringBackupId === backup.backupId ? "Restoring..." : "Restore Candidate"}
+                  </button>
+                </div>
+              </article>
+            ))}
+          </div>
+        </Reveal>
+      ) : null}
+
       <div className="glass-panel dashboard-panel">
         <div className="dashboard-panel__toolbar">
           <div className="tab-switcher">
@@ -512,9 +748,46 @@ function AdminHomepage() {
                         </div>
                       </button>
                       <div className="dashboard-item__actions">
-                        <button type="button" className="button button--ghost" onClick={() => handlePaidToggle(student._id, !student.paid)}>Toggle Paid</button>
-                        <button type="button" className="button button--ghost" onClick={() => handleVisitedToggle(student._id, !student.visited)}>Toggle Visited</button>
-                        <button type="button" className="button button--ghost" onClick={() => copyMobile(student.mobile)}>Copy Mobile</button>
+                        <button
+                          type="button"
+                          className={`dashboard-icon-button ${student.paid ? "is-active is-paid" : ""}`.trim()}
+                          onClick={() => handlePaidToggle(student._id, !student.paid)}
+                          disabled={updatingPaidId === student._id}
+                          aria-label={student.paid ? "Mark as unpaid" : "Mark as paid"}
+                          title={student.paid ? "Mark as unpaid" : "Mark as paid"}
+                        >
+                          {updatingPaidId === student._id ? <FaSpinner className="is-spinning" /> : <FaHandHoldingDollar />}
+                          <span>{student.paid ? "Paid" : "Mark Paid"}</span>
+                        </button>
+                        <button
+                          type="button"
+                          className={`dashboard-icon-button ${student.visited ? "is-active is-visited" : ""}`.trim()}
+                          onClick={() => handleVisitedToggle(student._id, !student.visited)}
+                          disabled={updatingVisitedId === student._id}
+                          aria-label={student.visited ? "Mark as not visited" : "Mark as visited"}
+                          title={student.visited ? "Mark as not visited" : "Mark as visited"}
+                        >
+                          {updatingVisitedId === student._id ? <FaSpinner className="is-spinning" /> : <FaCalendarCheck />}
+                          <span>{student.visited ? "Visited" : "Mark Visited"}</span>
+                        </button>
+                        <button
+                          type="button"
+                          className="dashboard-icon-button"
+                          onClick={() => copyMobile(student.mobile)}
+                          aria-label="Copy mobile number"
+                          title="Copy mobile number"
+                        >
+                          <FaCopy />
+                          <span>Copy</span>
+                        </button>
+                        <button
+                          type="button"
+                          className="button button--danger"
+                          onClick={() => handleDeleteStudent(student)}
+                          disabled={deletingStudentId === student._id}
+                        >
+                          {deletingStudentId === student._id ? "Deleting..." : "Delete"}
+                        </button>
                       </div>
                     </article>
                   ))
@@ -574,6 +847,14 @@ function AdminHomepage() {
                     <div className="dashboard-detail__actions">
                       <a className="button button--secondary" href={`tel:${selectedStudent.mobile}`}><FaPhone /> Call</a>
                       <button type="button" className="button button--secondary" onClick={() => openWhatsApp(selectedStudent.mobile, selectedStudent.name)}><FaWhatsapp /> WhatsApp</button>
+                      <button
+                        type="button"
+                        className="button button--danger"
+                        onClick={() => handleDeleteStudent(selectedStudent)}
+                        disabled={deletingStudentId === selectedStudent._id}
+                      >
+                        {deletingStudentId === selectedStudent._id ? "Deleting..." : "Delete Candidate"}
+                      </button>
                     </div>
                   </>
                 ) : (
@@ -594,6 +875,16 @@ function AdminHomepage() {
                     <span className="status-badge is-success">Admin account</span>
                   </div>
                   <div className="dashboard-item__meta"><span>Created: {admin.createdAt ? new Date(admin.createdAt).toLocaleDateString() : "N/A"}</span></div>
+                  <div className="dashboard-item__actions">
+                    <button
+                      type="button"
+                      className="button button--danger"
+                      onClick={() => handleDeleteAdmin(admin)}
+                      disabled={deletingAdminId === admin._id}
+                    >
+                      {deletingAdminId === admin._id ? "Deleting..." : "Delete Admin"}
+                    </button>
+                  </div>
                 </article>
               ))
             )}
