@@ -1385,7 +1385,8 @@ img {
   }
 
   .brand__subtitle {
-    display: none;
+    color: var(--text-medium);
+    font-size: 0.45rem;
   }
 
   .site-footer__bottom {
