@@ -125,7 +125,7 @@ function RegistrationForm({
   const [showCandidateDropdown, setShowCandidateDropdown] = useState(false);
   const activeRequestRef = useRef(0);
 
-  const ageNote = useMemo(() => "For this form, the accepted age is 50 or below.", []);
+  const ageNote = useMemo(() => "For this form, the accepted age is 30 or below.", []);
   const isOtherParishSelected = formData.parish === "Other";
   const [mainTitle, titleAccent] = useMemo(() => {
     const [head, ...rest] = title.split(",");
@@ -284,7 +284,13 @@ function RegistrationForm({
     if (!Number.isFinite(age) || age < 1 || age > 50) nextErrors.age = "Age must be between 1 and 50.";
 
     setErrors(nextErrors);
-    return Object.keys(nextErrors).length === 0;
+    const validationMessages = Object.values(nextErrors).filter(Boolean);
+
+    if (validationMessages.length > 0) {
+      toast.error(validationMessages[0] ?? "Please correct the highlighted form errors.");
+    }
+
+    return validationMessages.length === 0;
   };
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -328,7 +334,6 @@ function RegistrationForm({
           <span className={titleAccent ? "page-header__title-main" : undefined}>{mainTitle}</span>
           {titleAccent ? <small className="page-header__title-accent">{titleAccent}</small> : null}
         </h1>
-        {/* {description && <p>{description}</p>} */}
       </Reveal>
 
       <Reveal delay={120}>

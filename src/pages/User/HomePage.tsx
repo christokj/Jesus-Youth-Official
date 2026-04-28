@@ -53,14 +53,15 @@ function HomePage() {
       <section className="hero shell">
         <div className="hero__layout">
           <div className="hero__content hero__content--image glass-panel">
-            <div className="hero__banner-shell">
-              <img
-                src="/assets/rooted_in_christ_banner.jpeg"
-                alt="Rooted in Christ banner for Jesus Youth Chengaloor"
-                className="hero__banner"
-              />
-
-            </div>
+            <Link to="/register-page" className="hero__banner-link" aria-label="Register for the gathering">
+              <div className="hero__banner-shell">
+                <img
+                  src="/assets/rooted_in_christ_banner.jpeg"
+                  alt="Rooted in Christ banner for Jesus Youth Chengaloor"
+                  className="hero__banner"
+                />
+              </div>
+            </Link>
             <div className="hero__actions hero__actions--mobile-join">
               <Link to="/register-page" className="button button--primary">
                 Join the Gathering

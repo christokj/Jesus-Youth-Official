@@ -1,8 +1,9 @@
-import { ChangeEvent, FormEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import Reveal from "../../components/Reveal";
 import { axiosInstance } from "../../config/axiosInstance";
+import { consumeAdminSessionMessage, saveAdminSession } from "../../utils/adminAuth";
 
 interface LoginForm {
   username: string;
@@ -13,6 +14,15 @@ function AdminLoginPage() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState<LoginForm>({ username: "", password: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+
+  useEffect(() => {
+    const pendingMessage = consumeAdminSessionMessage();
+
+    if (pendingMessage) {
+      toast.error(pendingMessage);
+    }
+  }, []);
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
@@ -31,8 +41,7 @@ function AdminLoginPage() {
     setIsSubmitting(true);
     try {
       const response = await axiosInstance.post<{ token: string; expiresAt: number }>("/admin/login", formData);
-      localStorage.setItem("token", response.data.token);
-      localStorage.setItem("adminSessionExpiresAt", String(response.data.expiresAt));
+      saveAdminSession(response.data.token, response.data.expiresAt);
       toast.success("Admin login successful.");
       navigate("/admin-home");
     } catch (error: unknown) {
@@ -70,13 +79,24 @@ function AdminLoginPage() {
           </label>
           <label className="field">
             <span>Password</span>
-            <input
-              name="password"
-              type="password"
-              value={formData.password}
-              onChange={handleChange}
-              placeholder="Password"
-            />
+            <div className="field-password">
+              <input
+                name="password"
+                type={showPassword ? "text" : "password"}
+                value={formData.password}
+                onChange={handleChange}
+                placeholder="Password"
+              />
+              <button
+                type="button"
+                className="field-password__toggle"
+                onClick={() => setShowPassword((current) => !current)}
+                aria-label={showPassword ? "Hide password" : "Show password"}
+                aria-pressed={showPassword}
+              >
+                {showPassword ? "Hide" : "Show"}
+              </button>
+            </div>
           </label>
           <button type="submit" className="button button--primary button--full" disabled={isSubmitting}>
             {isSubmitting ? "Signing in..." : "Login"}

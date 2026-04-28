@@ -8,6 +8,7 @@ import SuccessPage from "../pages/User/SuccessPage";
 import AdminLoginPage from "../pages/Admin/AdminLoginPage";
 import ContactPage from "../pages/User/ContactPage";
 import AdminRegisterPage from "../pages/Admin/AdminRegisterPage";
+import AdminRouteGuard from "../components/AdminRouteGuard";
 
 export const router = createBrowserRouter([
   {
@@ -17,11 +18,16 @@ export const router = createBrowserRouter([
     children: [
       { index: true, element: <HomePage /> },
       { path: "register-page", element: <RegisterPage /> },
-      { path: "admin-home", element: <AdminHomepage /> },
       { path: "success", element: <SuccessPage /> },
       { path: "admin-login", element: <AdminLoginPage /> },
       { path: "contact-page", element: <ContactPage /> },
-      { path: "admin-register", element: <AdminRegisterPage /> },
+      {
+        element: <AdminRouteGuard />,
+        children: [
+          { path: "admin-home", element: <AdminHomepage /> },
+          { path: "admin-register", element: <AdminRegisterPage /> },
+        ],
+      },
     ],
   },
 ]);

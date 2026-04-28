@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { AxiosError } from "axios";
+import axios, { AxiosError } from "axios";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import {
@@ -17,6 +17,7 @@ import {
 import { toast } from "sonner";
 import Reveal from "../../components/Reveal";
 import { axiosInstance } from "../../config/axiosInstance";
+import { clearAdminSession, expireAdminSession, getAdminSessionExpiry } from "../../utils/adminAuth";
 
 interface Student {
   _id: string;
@@ -59,17 +60,6 @@ const adminSessionDurationMs = 3 * 60 * 60 * 1000;
 const deletedStudentsStorageKey = "adminDeletedStudentsBackup";
 const deleteRecoveryWindowMs = 10 * 60 * 1000;
 
-const getStoredExpiryTime = () => {
-  const rawValue = localStorage.getItem("adminSessionExpiresAt");
-  const parsedValue = Number(rawValue);
-
-  if (Number.isFinite(parsedValue) && parsedValue > 0) {
-    return parsedValue;
-  }
-
-  return null;
-};
-
 const formatTimeRemaining = (milliseconds: number) => {
   const totalSeconds = Math.max(0, Math.floor(milliseconds / 1000));
   const hours = String(Math.floor(totalSeconds / 3600)).padStart(2, "0");
@@ -83,6 +73,23 @@ const formatRecoveryTimeRemaining = (milliseconds: number) => {
   const minutes = String(Math.floor(totalSeconds / 60)).padStart(2, "0");
   const seconds = String(totalSeconds % 60).padStart(2, "0");
   return `${minutes}:${seconds}`;
+};
+
+const formatDateFilterValue = (dateValue?: string) => {
+  if (!dateValue) {
+    return "";
+  }
+
+  const parsedDate = new Date(dateValue);
+
+  if (Number.isNaN(parsedDate.getTime())) {
+    return "";
+  }
+
+  const year = parsedDate.getFullYear();
+  const month = String(parsedDate.getMonth() + 1).padStart(2, "0");
+  const day = String(parsedDate.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
 };
 
 const readDeletedStudentBackups = () => {
@@ -118,6 +125,9 @@ const getApiErrorMessage = (error: unknown, fallbackMessage: string) => {
   return fallbackMessage;
 };
 
+const isHandledAdminAuthError = (error: unknown) =>
+  axios.isCancel(error) || (error instanceof AxiosError && error.response?.status === 401);
+
 function AdminHomepage() {
   const candidatesPerPage = 8;
   const navigate = useNavigate();
@@ -132,6 +142,7 @@ function AdminHomepage() {
   const [maritalFilter, setMaritalFilter] = useState("all");
   const [paymentFilter, setPaymentFilter] = useState<FilterValue>("all");
   const [visitedFilter, setVisitedFilter] = useState<FilterValue>("all");
+  const [registrationDateFilter, setRegistrationDateFilter] = useState("");
   const [sortBy, setSortBy] = useState<SortValue>("recent");
   const [candidatePage, setCandidatePage] = useState(1);
   const [selectedStudentId, setSelectedStudentId] = useState<string | null>(null);
@@ -145,71 +156,32 @@ function AdminHomepage() {
   const [recoveryNow, setRecoveryNow] = useState(Date.now());
   const [restoringBackupId, setRestoringBackupId] = useState<string | null>(null);
 
-  const handleUnauthorized = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("adminSessionExpiresAt");
-    toast.error("Admin session expired. Please login again.");
-    navigate("/admin-login");
-  };
-
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      navigate("/admin-login");
-      return;
+    const expiryTime = getAdminSessionExpiry();
+    if (expiryTime) {
+      setSessionTimeRemaining(Math.max(0, expiryTime - Date.now()));
     }
 
-    const expiryTime = getStoredExpiryTime();
-    if (!expiryTime) {
-      localStorage.removeItem("token");
-      localStorage.removeItem("adminSessionExpiresAt");
-      toast.error("Admin session information is missing. Please login again.");
-      navigate("/admin-login");
-      return;
-    }
-
-    const remainingTime = expiryTime - Date.now();
-
-    if (remainingTime <= 0) {
-      localStorage.removeItem("token");
-      localStorage.removeItem("adminSessionExpiresAt");
-      toast.error("Admin session expired. Please login again.");
-      navigate("/admin-login");
-      return;
-    }
-
-    setSessionTimeRemaining(remainingTime);
     setDeletedStudentBackups(readDeletedStudentBackups());
 
     void Promise.all([fetchStudents(2026), fetchAdmins()]).finally(() => setLoading(false));
-  }, [navigate]);
+  }, []);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      return;
-    }
-
     const tick = () => {
-      const expiryTime = getStoredExpiryTime();
+      const expiryTime = getAdminSessionExpiry();
 
       if (!expiryTime) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("adminSessionExpiresAt");
+        expireAdminSession("Admin session information is missing. Please login again.");
         setSessionTimeRemaining(0);
-        toast.error("Admin session information is missing. Please login again.");
-        navigate("/admin-login");
         return;
       }
 
       const remainingTime = expiryTime - Date.now();
 
       if (remainingTime <= 0) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("adminSessionExpiresAt");
+        expireAdminSession("Admin session expired. Please login again.");
         setSessionTimeRemaining(0);
-        toast.error("Admin session expired. Please login again.");
-        navigate("/admin-login");
         return;
       }
 
@@ -222,7 +194,7 @@ function AdminHomepage() {
     return () => {
       window.clearInterval(intervalId);
     };
-  }, [navigate]);
+  }, []);
 
   useEffect(() => {
     const intervalId = window.setInterval(() => {
@@ -244,8 +216,7 @@ function AdminHomepage() {
       setSelectedStudentId((current) => current ?? response.data[0]?._id ?? null);
       return response.data;
     } catch (error: unknown) {
-      if (error instanceof AxiosError && error.response?.status === 401) {
-        handleUnauthorized();
+      if (isHandledAdminAuthError(error)) {
         return [] as Student[];
       }
 
@@ -259,8 +230,7 @@ function AdminHomepage() {
       const response = await axiosInstance.get<Admin[]>("/admin/get-admins");
       setAdmins(response.data);
     } catch (error: unknown) {
-      if (error instanceof AxiosError && error.response?.status === 401) {
-        handleUnauthorized();
+      if (isHandledAdminAuthError(error)) {
         return;
       }
 
@@ -269,7 +239,6 @@ function AdminHomepage() {
   };
 
   useEffect(() => {
-    if (!localStorage.getItem("token")) return;
     void fetchStudents(selectedYear);
     setSelectedStudentId(null);
   }, [selectedYear]);
@@ -291,8 +260,10 @@ function AdminHomepage() {
       const matchesMarital = maritalFilter === "all" || student.maritalStatus === maritalFilter;
       const matchesPayment = paymentFilter === "all" || (paymentFilter === "paid" ? Boolean(student.paid) : !student.paid);
       const matchesVisited = visitedFilter === "all" || (visitedFilter === "visited" ? Boolean(student.visited) : !student.visited);
+      const matchesRegistrationDate =
+        !registrationDateFilter || formatDateFilterValue(student.createdAt) === registrationDateFilter;
 
-      return matchesSearch && matchesGender && matchesUnit && matchesParish && matchesMarital && matchesPayment && matchesVisited;
+      return matchesSearch && matchesGender && matchesUnit && matchesParish && matchesMarital && matchesPayment && matchesVisited && matchesRegistrationDate;
     });
 
     return [...base].sort((first, second) => {
@@ -301,7 +272,7 @@ function AdminHomepage() {
       if (sortBy === "age-low") return (first.age || 0) - (second.age || 0);
       return new Date(second.createdAt || "").getTime() - new Date(first.createdAt || "").getTime();
     });
-  }, [students, searchTerm, genderFilter, unitFilter, parishFilter, maritalFilter, paymentFilter, visitedFilter, sortBy]);
+  }, [students, searchTerm, genderFilter, unitFilter, parishFilter, maritalFilter, paymentFilter, visitedFilter, registrationDateFilter, sortBy]);
 
   const filteredAdmins = useMemo(
     () => admins.filter((admin) => [admin.username, admin.email].join(" ").toLowerCase().includes(searchTerm.toLowerCase())),
@@ -318,7 +289,7 @@ function AdminHomepage() {
 
   useEffect(() => {
     setCandidatePage(1);
-  }, [searchTerm, selectedYear, genderFilter, unitFilter, parishFilter, maritalFilter, paymentFilter, visitedFilter, sortBy]);
+  }, [searchTerm, selectedYear, genderFilter, unitFilter, parishFilter, maritalFilter, paymentFilter, visitedFilter, registrationDateFilter, sortBy]);
 
   useEffect(() => {
     setCandidatePage((current) => Math.min(current, totalCandidatePages));
@@ -425,8 +396,7 @@ function AdminHomepage() {
       setSelectedStudentId((current) => (current === student._id ? null : current));
       toast.success("Candidate deleted. You can recover it for a short time.");
     } catch (error: unknown) {
-      if (error instanceof AxiosError && error.response?.status === 401) {
-        handleUnauthorized();
+      if (isHandledAdminAuthError(error)) {
         return;
       }
 
@@ -450,8 +420,7 @@ function AdminHomepage() {
       setAdmins((current) => current.filter((item) => item._id !== admin._id));
       toast.success("Admin deleted successfully.");
     } catch (error: unknown) {
-      if (error instanceof AxiosError && error.response?.status === 401) {
-        handleUnauthorized();
+      if (isHandledAdminAuthError(error)) {
         return;
       }
 
@@ -507,8 +476,7 @@ function AdminHomepage() {
       await fetchStudents(selectedYear);
       toast.success("Candidate restored successfully.");
     } catch (error: unknown) {
-      if (error instanceof AxiosError && error.response?.status === 401) {
-        handleUnauthorized();
+      if (isHandledAdminAuthError(error)) {
         return;
       }
 
@@ -566,12 +534,12 @@ function AdminHomepage() {
     setMaritalFilter("all");
     setPaymentFilter("all");
     setVisitedFilter("all");
+    setRegistrationDateFilter("");
     setSortBy("recent");
   };
 
   const logout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("adminSessionExpiresAt");
+    clearAdminSession();
     toast.success("Logged out successfully.");
     navigate("/");
   };
@@ -709,6 +677,7 @@ function AdminHomepage() {
               <label className="field"><span>Marital status</span><select value={maritalFilter} onChange={(event) => setMaritalFilter(event.target.value)}>{maritalOptions.map((option) => <option key={option} value={option}>{option === "all" ? "All statuses" : option}</option>)}</select></label>
               <label className="field"><span>Payment</span><select value={paymentFilter} onChange={(event) => setPaymentFilter(event.target.value as FilterValue)}><option value="all">All</option><option value="paid">Paid</option><option value="unpaid">Unpaid</option></select></label>
               <label className="field"><span>Visit status</span><select value={visitedFilter} onChange={(event) => setVisitedFilter(event.target.value as FilterValue)}><option value="all">All</option><option value="visited">Visited</option><option value="not-visited">Not visited</option></select></label>
+              <label className="field"><span>Registration date</span><input type="date" value={registrationDateFilter} onChange={(event) => setRegistrationDateFilter(event.target.value)} /></label>
               <label className="field"><span>Sort by</span><select value={sortBy} onChange={(event) => setSortBy(event.target.value as SortValue)}><option value="recent">Most recent</option><option value="name">Name</option><option value="age-high">Age high to low</option><option value="age-low">Age low to high</option></select></label>
               <button type="button" className="button button--ghost" onClick={resetFilters}>Reset filters</button>
             </div>
